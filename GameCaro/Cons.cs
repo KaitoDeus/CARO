@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameCaro
 {
-    // Const (Sử dụng hằng số để tái sử dụng)
+    // Const (Tái sử dụng hằng số)
     public class Cons
     {
         public static int CHESS_WIDTH = 30;
@@ -14,5 +14,9 @@ namespace GameCaro
 
         public static int CHESS_BOARD_WIDTH = 25;
         public static int CHESS_BOARD_HEIGHT = 18;
+
+        public static int COOL_DOWN_STEP = 100;
+        public static int COOL_DOWN_TIME = 10000;
+        public static int COOL_DOWN_INTERVAL = 100;
     }
 }
