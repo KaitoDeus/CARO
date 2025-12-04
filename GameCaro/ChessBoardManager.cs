@@ -95,6 +95,14 @@ namespace GameCaro
                 endedGame -= value;
             }
         }
+
+        private Stack<PlayInfo> playTimeLine;
+        public Stack<PlayInfo> PlayTimeLine 
+        { 
+            get => playTimeLine; 
+            set => playTimeLine = value; 
+        }
+
         #endregion
 
         #region Initialize
@@ -112,6 +120,7 @@ namespace GameCaro
                 new Player("Khai", Image.FromFile(Application.StartupPath + "\\Resources\\P1.png")),
                 new Player("Tony", Image.FromFile(Application.StartupPath + "\\Resources\\P2.png"))
             };
+
         }
         #endregion
 
@@ -120,6 +129,8 @@ namespace GameCaro
         {
             ChessBoard.Enabled = true;
             ChessBoard.Controls.Clear();
+
+            PlayTimeLine = new Stack<PlayInfo>();
 
             CurrentPlayer = 0;
 
@@ -169,7 +180,11 @@ namespace GameCaro
                 return;
 
             Mark(btn);
-            
+
+            PlayTimeLine.Push(new PlayInfo(GetChessPoint(btn), CurrentPlayer));
+
+            CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
+
             ChangePlayer();
 
             if (playerMarked != null)
@@ -185,6 +200,42 @@ namespace GameCaro
         {
             if (endedGame != null)
                 endedGame(this, new EventArgs());
+        }
+
+        public bool Undo()
+        {
+            if (PlayTimeLine.Count <= 0)
+                return false;
+
+            PlayInfo oldPoint = PlayTimeLine.Pop();
+            Button btn = matrix[oldPoint.Point.Y][oldPoint.Point.X];
+
+            btn.BackgroundImage = null;
+
+            if (oldPoint.currentPlayer == 0) 
+            {
+                countO--;
+                LabelCountO.Text = "O:" + countO.ToString();
+            }
+            else 
+            {
+                countX--;
+                LabelCountX.Text = "X:" + countX.ToString();
+            }
+
+            if (PlayTimeLine.Count <= 0)
+            {
+                CurrentPlayer = 0;
+            }
+            else
+            {
+                oldPoint = PlayTimeLine.Peek();
+                CurrentPlayer = oldPoint.currentPlayer == 1 ? 0 : 1;
+            }
+
+            ChangePlayer();
+
+            return true;
         }
 
         private bool isEndGame(Button btn)
@@ -340,8 +391,6 @@ namespace GameCaro
                 countX++;
                 LabelCountX.Text = "X:" + countX.ToString();
             }
-
-            CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
         }
 
         private void ChangePlayer()
