@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace GameCaro
 {
+    
     public class SocketManager
     {
         #region Client
