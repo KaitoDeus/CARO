@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Reflection.Emit;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -28,6 +28,9 @@ namespace GameCaro
 
             Control.CheckForIllegalCrossThreadCalls = false;
 
+            // Áp dụng giao diện hiện đại
+            ApplyModernStyle();
+
             ChessBoard = new ChessBoardManager(pnlChessBoard, txbPlayerName, pctbMark, lblCountO, lblCountX);
             ChessBoard.EndedGame += ChessBoard_EndedGame;
             ChessBoard.PlayerMarked += ChessBoard_PlayerMarked;
@@ -43,12 +46,125 @@ namespace GameCaro
             NewGame();
         }
 
+        #region Modern UI Setup
+        /// <summary>
+        /// Áp dụng giao diện hiện đại cho toàn bộ form
+        /// </summary>
+        private void ApplyModernStyle()
+        {
+            // Form settings
+            this.BackColor = ModernColors.DarkBackground;
+            this.ForeColor = ModernColors.TextPrimary;
+            this.Font = new Font("Segoe UI", 10);
+            
+            // Panel chessboard
+            pnlChessBoard.BackColor = ModernColors.BoardBackground;
+            pnlChessBoard.BorderStyle = BorderStyle.None;
+            
+            // Panel thông tin bên phải
+            panel4.BackColor = ModernColors.CardBackground;
+            // Giữ nguyên hình nền panel1 từ Resources
+            
+            // Labels
+            ApplyLabelStyle(label1);
+            ApplyLabelStyle(label2);
+            ApplyLabelStyle(label5);
+            ApplyLabelStyle(lblCountO, ModernColors.PlayerO);
+            ApplyLabelStyle(lblCountX, ModernColors.PlayerX);
+            
+            // TextBox IP
+            txbIP.BackColor = ModernColors.CardBackgroundLight;
+            txbIP.ForeColor = ModernColors.TextPrimary;
+            txbIP.BorderStyle = BorderStyle.FixedSingle;
+            txbIP.Font = new Font("Segoe UI", 11);
+            
+            // TextBox Player Name
+            txbPlayerName.BackColor = ModernColors.CardBackgroundLight;
+            txbPlayerName.ForeColor = ModernColors.TextPrimary;
+            txbPlayerName.BorderStyle = BorderStyle.FixedSingle;
+            txbPlayerName.Font = new Font("Segoe UI", 11, FontStyle.Bold);
+            
+            // Button LAN
+            ApplyButtonStyle(btnLAN);
+            
+            // PictureBox Mark - giữ nguyên để hiển thị hình từ Resources
+            pctbMark.BorderStyle = BorderStyle.None;
+            
+            // ProgressBar - sử dụng custom drawing
+            prcbCoolDown.BackColor = ModernColors.CardBackgroundLight;
+            prcbCoolDown.ForeColor = ModernColors.Primary;
+            
+            // MenuStrip
+            menuStrip1.BackColor = ModernColors.CardBackground;
+            menuStrip1.ForeColor = ModernColors.TextPrimary;
+            menuStrip1.RenderMode = ToolStripRenderMode.Professional;
+            menuStrip1.Renderer = new ModernMenuRenderer();
+        }
+
+        private void ApplyLabelStyle(System.Windows.Forms.Label label, Color? overrideColor = null)
+        {
+            label.ForeColor = overrideColor ?? ModernColors.TextPrimary;
+            label.BackColor = Color.Transparent;
+        }
+
+        private void ApplyButtonStyle(Button button)
+        {
+            button.FlatStyle = FlatStyle.Flat;
+            button.FlatAppearance.BorderSize = 0;
+            button.BackColor = ModernColors.Primary;
+            button.ForeColor = ModernColors.TextPrimary;
+            button.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            button.Cursor = Cursors.Hand;
+            
+            // Hiệu ứng hover
+            button.MouseEnter += (s, e) => button.BackColor = ModernColors.PrimaryLight;
+            button.MouseLeave += (s, e) => button.BackColor = ModernColors.Primary;
+        }
+
+        /// <summary>
+        /// Bật/tắt bàn cờ với hiệu ứng visual rõ ràng
+        /// </summary>
+        private void SetChessBoardEnabled(bool enabled)
+        {
+            pnlChessBoard.Enabled = enabled;
+            
+            // Hiệu ứng mờ khi bị vô hiệu hóa
+            if (enabled)
+            {
+                // Bàn cờ sáng - đang chơi được
+                pnlChessBoard.BackColor = ModernColors.BoardBackground;
+                foreach (Control ctrl in pnlChessBoard.Controls)
+                {
+                    if (ctrl is ChessButton btn)
+                    {
+                        btn.Enabled = true;
+                        btn.BackColor = ModernColors.BoardCell;  // Màu trắng
+                    }
+                }
+            }
+            else
+            {
+                // Bàn cờ tối/mờ - đang chờ đối thủ
+                pnlChessBoard.BackColor = Color.FromArgb(180, 180, 180); // Xám đậm hơn
+                foreach (Control ctrl in pnlChessBoard.Controls)
+                {
+                    if (ctrl is ChessButton btn)
+                    {
+                        btn.Enabled = false;
+                        btn.BackColor = Color.FromArgb(220, 220, 220);  // Xám nhạt cho ô cờ
+                    }
+                }
+            }
+            pnlChessBoard.Refresh();
+        }
+        #endregion
+
         #region Methods
         void EndGame()
         {
             tmCoolDown.Stop();
             undoToolStripMenuItem.Enabled = false;
-            pnlChessBoard.Enabled = false;
+            SetChessBoardEnabled(false);
             //MessageBox.Show("Kết thúc");
         }
 
@@ -77,7 +193,7 @@ namespace GameCaro
         private void ChessBoard_PlayerMarked(object sender, ButtonClickEvent e)
         {
             tmCoolDown.Start();
-            pnlChessBoard.Enabled = false;
+            SetChessBoardEnabled(false);
             prcbCoolDown.Value = 0;
 
             socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", e.ClickedPoint));
@@ -109,7 +225,7 @@ namespace GameCaro
         {
             NewGame();
             socket.Send(new SocketData((int)SocketCommand.NEW_GAME, "", new Point()));
-            pnlChessBoard.Enabled = true;
+            SetChessBoardEnabled(true);
         }
 
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -145,13 +261,13 @@ namespace GameCaro
             if (!socket.ConnectServer())
             {
                 socket.isServer = true;
-                pnlChessBoard.Enabled = true;
+                SetChessBoardEnabled(true);
                 socket.CreateServer();
             }
             else
             {
                 socket.isServer = false;
-                pnlChessBoard.Enabled = false;
+                SetChessBoardEnabled(false);
                 Listen();
             }
 
@@ -196,14 +312,14 @@ namespace GameCaro
                     this.Invoke((MethodInvoker)(() =>
                     {
                         NewGame();
-                        pnlChessBoard.Enabled = false;
+                        SetChessBoardEnabled(false);
                     }));
                     break;
                 case (int)SocketCommand.SEND_POINT:
                     this.Invoke((MethodInvoker)(() =>
                     {
                         prcbCoolDown.Value = 0;
-                        pnlChessBoard.Enabled = true;
+                        SetChessBoardEnabled(true);
                         tmCoolDown.Start();
                         ChessBoard.OtherPlayerMark(data.Point);
                         undoToolStripMenuItem.Enabled = true;
