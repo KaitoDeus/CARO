@@ -46,9 +46,9 @@ namespace GameCaro
             set => playerMark = value; 
         }
 
-        // Sử dụng ChessButton thay vì Button thông thường
-        private List<List<ChessButton>> matrix;
-        public List<List<ChessButton>> Matrix 
+        // Sử dụng Button thông thường
+        private List<List<Button>> matrix;
+        public List<List<Button>> Matrix 
         { 
             get => matrix;
             set => matrix = value; 
@@ -130,7 +130,6 @@ namespace GameCaro
         {
             ChessBoard.Enabled = true;
             ChessBoard.Controls.Clear();
-            ChessBoard.BackColor = ModernColors.BoardBackground;
 
             PlayTimeLine = new Stack<PlayInfo>();
 
@@ -138,7 +137,7 @@ namespace GameCaro
 
             ChangePlayer();
 
-            Matrix = new List<List<ChessButton>>();
+            Matrix = new List<List<Button>>();
             
             // Tính kích thước ô để lắp đầy panel
             int cellWidth = ChessBoard.Width / Cons.CHESS_BOARD_WIDTH;
@@ -150,15 +149,16 @@ namespace GameCaro
             
             for (int i = 0; i < Cons.CHESS_BOARD_HEIGHT; i++)
             {
-                Matrix.Add(new List<ChessButton>());
+                Matrix.Add(new List<Button>());
                 for (int j = 0; j < Cons.CHESS_BOARD_WIDTH; j++)
                 {
-                    ChessButton btn = new ChessButton()
+                    Button btn = new Button()
                     {
                         Width = cellWidth,
                         Height = cellHeight,
                         Location = new Point(startX + j * cellWidth, startY + i * cellHeight),
-                        Tag = i.ToString()
+                        Tag = i.ToString(),
+                        BackgroundImageLayout = ImageLayout.Stretch
                     };
 
                     btn.Click += btn_Click;
@@ -175,10 +175,10 @@ namespace GameCaro
 
         void btn_Click(object sender, EventArgs e)
         {
-            ChessButton btn = sender as ChessButton;
+            Button btn = sender as Button;
 
-            // Kiểm tra nếu ô đã được đánh
-            if (btn.PlayerMark >= 0)
+            // Kiểm tra nếu ô đã được đánh (có hình)
+            if (btn.BackgroundImage != null)
                 return;
 
             Mark(btn);
@@ -200,9 +200,9 @@ namespace GameCaro
 
         public void OtherPlayerMark(Point point)
         {
-            ChessButton btn = Matrix[point.Y][point.X];
+            Button btn = Matrix[point.Y][point.X];
             // Kiểm tra nếu ô đã được đánh
-            if (btn.PlayerMark >= 0)
+            if (btn.BackgroundImage != null)
                 return;
 
             Mark(btn);
@@ -231,10 +231,10 @@ namespace GameCaro
                 return false;
 
             PlayInfo oldPoint = PlayTimeLine.Pop();
-            ChessButton btn = matrix[oldPoint.Point.Y][oldPoint.Point.X];
+            Button btn = matrix[oldPoint.Point.Y][oldPoint.Point.X];
 
             // Reset ô cờ về trạng thái ban đầu
-            btn.ResetMark();
+            btn.BackgroundImage = null;
 
             if (oldPoint.currentPlayer == 0) 
             {
@@ -262,12 +262,12 @@ namespace GameCaro
             return true;
         }
 
-        private bool isEndGame(ChessButton btn)
+        private bool isEndGame(Button btn)
         {
             return isEndHorizontal(btn) || isEndVertical(btn) || isEndPrimary(btn) || isEndSub(btn);
         }
 
-        private Point GetChessPoint(ChessButton btn)
+        private Point GetChessPoint(Button btn)
         {
             int vertical = Convert.ToInt32(btn.Tag);
             int horizontal = Matrix[vertical].IndexOf(btn);
@@ -277,14 +277,30 @@ namespace GameCaro
             return point;
         }
 
-        private bool isEndHorizontal(ChessButton btn)
+        // Lấy index của player từ Button (dựa vào hình)
+        private int GetPlayerMark(Button btn)
+        {
+            if (btn.BackgroundImage == null)
+                return -1;
+            
+            // So sánh hình
+            if (btn.BackgroundImage == Player[0].Mark)
+                return 0;
+            else if (btn.BackgroundImage == Player[1].Mark)
+                return 1;
+            
+            return -1;
+        }
+
+        private bool isEndHorizontal(Button btn)
         {
             Point point = GetChessPoint(btn);
+            int playerMark = GetPlayerMark(btn);
 
             int countLeft = 0;
             for(int i = point.X; i >= 0; i--)
             {
-                if (Matrix[point.Y][i].PlayerMark == btn.PlayerMark && btn.PlayerMark >= 0)
+                if (GetPlayerMark(Matrix[point.Y][i]) == playerMark && playerMark >= 0)
                 {
                     countLeft++;
                 }
@@ -295,7 +311,7 @@ namespace GameCaro
             int countRight = 0;
             for (int i = point.X+1; i < Cons.CHESS_BOARD_WIDTH; i++)
             {
-                if (Matrix[point.Y][i].PlayerMark == btn.PlayerMark && btn.PlayerMark >= 0)
+                if (GetPlayerMark(Matrix[point.Y][i]) == playerMark && playerMark >= 0)
                 {
                     countRight++;
                 }
@@ -306,14 +322,15 @@ namespace GameCaro
             return countLeft + countRight == 5;
         }
 
-        private bool isEndVertical(ChessButton btn)
+        private bool isEndVertical(Button btn)
         {
             Point point = GetChessPoint(btn);
+            int playerMark = GetPlayerMark(btn);
 
             int countTop = 0;
             for (int i = point.Y; i >= 0; i--)
             {
-                if (Matrix[i][point.X].PlayerMark == btn.PlayerMark && btn.PlayerMark >= 0)
+                if (GetPlayerMark(Matrix[i][point.X]) == playerMark && playerMark >= 0)
                 {
                     countTop++;
                 }
@@ -324,7 +341,7 @@ namespace GameCaro
             int countBottom = 0;
             for (int i = point.Y + 1; i < Cons.CHESS_BOARD_HEIGHT; i++)
             {
-                if (Matrix[i][point.X].PlayerMark == btn.PlayerMark && btn.PlayerMark >= 0)
+                if (GetPlayerMark(Matrix[i][point.X]) == playerMark && playerMark >= 0)
                 {
                     countBottom++;
                 }
@@ -335,16 +352,17 @@ namespace GameCaro
             return countTop + countBottom == 5;
         }
 
-        private bool isEndPrimary(ChessButton btn)
+        private bool isEndPrimary(Button btn)
         {
             Point point = GetChessPoint(btn);
+            int playerMark = GetPlayerMark(btn);
 
             int countTop = 0;
             for (int i = 0; i <= point.X; i++)
             {
                 if (point.X - i < 0 || point.Y - i < 0)
                     break;
-                if (Matrix[point.Y-i][point.X-i].PlayerMark == btn.PlayerMark && btn.PlayerMark >= 0)
+                if (GetPlayerMark(Matrix[point.Y-i][point.X-i]) == playerMark && playerMark >= 0)
                 {
                     countTop++;
                 }
@@ -357,7 +375,7 @@ namespace GameCaro
             {
                 if (point.Y + i >= Cons.CHESS_BOARD_HEIGHT || point.X + i >= Cons.CHESS_BOARD_WIDTH)
                     break;
-                if (Matrix[point.Y + i][point.X + i].PlayerMark == btn.PlayerMark && btn.PlayerMark >= 0)
+                if (GetPlayerMark(Matrix[point.Y + i][point.X + i]) == playerMark && playerMark >= 0)
                 {
                     countBottom++;
                 }
@@ -368,16 +386,17 @@ namespace GameCaro
             return countTop + countBottom == 5;
         }
 
-        private bool isEndSub(ChessButton btn)
+        private bool isEndSub(Button btn)
         {
             Point point = GetChessPoint(btn);
+            int playerMark = GetPlayerMark(btn);
 
             int countTop = 0;
             for (int i = 0; i <= point.X; i++)
             {
                 if (point.X + i > Cons.CHESS_BOARD_WIDTH || point.Y - i < 0)
                     break;
-                if (Matrix[point.Y - i][point.X + i].PlayerMark == btn.PlayerMark && btn.PlayerMark >= 0)
+                if (GetPlayerMark(Matrix[point.Y - i][point.X + i]) == playerMark && playerMark >= 0)
                 {
                     countTop++;
                 }
@@ -390,7 +409,7 @@ namespace GameCaro
             {
                 if (point.Y + i >= Cons.CHESS_BOARD_HEIGHT || point.X - i < 0)
                     break;
-                if (Matrix[point.Y + i][point.X - i].PlayerMark == btn.PlayerMark && btn.PlayerMark >= 0)
+                if (GetPlayerMark(Matrix[point.Y + i][point.X - i]) == playerMark && playerMark >= 0)
                 {
                     countBottom++;
                 }
@@ -401,10 +420,10 @@ namespace GameCaro
             return countTop + countBottom == 5;
         }
 
-        private void Mark(ChessButton btn)
+        private void Mark(Button btn)
         {
-            // Sử dụng PlayerMark property với animation
-            btn.PlayerMark = CurrentPlayer;
+            // Hiển thị hình người chơi hiện tại
+            btn.BackgroundImage = Player[CurrentPlayer].Mark;
 
             if (CurrentPlayer == 0) 
             {
