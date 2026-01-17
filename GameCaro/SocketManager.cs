@@ -63,6 +63,10 @@ namespace GameCaro
 
         public bool Send(object data)
         {
+            // Kiểm tra client có tồn tại và đang kết nối không
+            if (client == null || !client.Connected)
+                return false;
+
             byte[] sendData = SerializeData(data);
 
             return SendData(client, sendData);
@@ -70,6 +74,10 @@ namespace GameCaro
 
         public object Receive()
         {
+            // Kiểm tra client có tồn tại và đang kết nối không
+            if (client == null || !client.Connected)
+                return null;
+
             byte[] receiveData = new byte[BUFFER];
             bool isOk = ReceiveData(client, receiveData);
 
