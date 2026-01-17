@@ -13,9 +13,9 @@ namespace GameCaro
         public static int CHESS_WIDTH = 30;
         public static int CHESS_HEIGHT = 30;
 
-        // Kích thước bàn cờ
-        public static int CHESS_BOARD_WIDTH = 25;
-        public static int CHESS_BOARD_HEIGHT = 18;
+        // Kích thước bàn cờ (số lượng ô lớn để phủ kín cửa sổ)
+        public static int CHESS_BOARD_WIDTH = 50;
+        public static int CHESS_BOARD_HEIGHT = 40;
 
         // Cấu hình đếm ngược
         public static int COOL_DOWN_STEP = 100;

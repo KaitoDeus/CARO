@@ -139,18 +139,22 @@ namespace GameCaro
 
             Matrix = new List<List<Button>>();
             
-            // Tính kích thước ô để lắp đầy panel
-            int cellWidth = ChessBoard.Width / Cons.CHESS_BOARD_WIDTH;
-            int cellHeight = ChessBoard.Height / Cons.CHESS_BOARD_HEIGHT;
+            // Sử dụng kích thước ô cố định từ Cons
+            int cellWidth = Cons.CHESS_WIDTH;
+            int cellHeight = Cons.CHESS_HEIGHT;
             
-            // Bắt đầu từ góc (0,0) để lắp đầy
+            // Sử dụng số lượng ô cố định từ Cons (50x25 = 1250 nút)
+            int numCols = Cons.CHESS_BOARD_WIDTH;
+            int numRows = Cons.CHESS_BOARD_HEIGHT;
+            
+            // Bắt đầu từ góc (0,0)
             int startX = 0;
             int startY = 0;
             
-            for (int i = 0; i < Cons.CHESS_BOARD_HEIGHT; i++)
+            for (int i = 0; i < numRows; i++)
             {
                 Matrix.Add(new List<Button>());
-                for (int j = 0; j < Cons.CHESS_BOARD_WIDTH; j++)
+                for (int j = 0; j < numCols; j++)
                 {
                     Button btn = new Button()
                     {
