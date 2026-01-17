@@ -151,14 +151,14 @@ namespace GameCaro
                 socket.isServer = true;
                 SetChessBoardEnabled(true);
                 socket.CreateServer();
-                btnLAN.Text = "Waiting...";
+                btnLAN.Text = "Chờ kết nối...";
             }
             else
             {
                 socket.isServer = false;
                 SetChessBoardEnabled(false);
                 Listen();
-                btnLAN.Text = "Connected";
+                btnLAN.Text = "Đã kết nối";
             }
         }
 
@@ -217,7 +217,7 @@ namespace GameCaro
                         tmCoolDown.Start();
                         ChessBoard.OtherPlayerMark(data.Point);
                         undoToolStripMenuItem.Enabled = true;
-                        btnLAN.Text = "Connected";
+                        btnLAN.Text = "Đã kết nối";
                     }));
                     break;
                 case (int)SocketCommand.UNDO:
