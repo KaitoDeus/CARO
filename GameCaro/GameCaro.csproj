@@ -70,7 +70,7 @@
   <ItemGroup>
     <Compile Include="ChessBoardManager.cs" />
     <Compile Include="Cons.cs" />
-    <Compile Include="ModernUI.cs" />
+
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
