@@ -140,6 +140,10 @@ namespace GameCaro
 
         private void btnLAN_Click(object sender, EventArgs e)
         {
+            // Disable nút LAN để tránh nhấn nhiều lần
+            btnLAN.Enabled = false;
+            txbIP.Enabled = false;
+
             socket.IP = txbIP.Text;
 
             if (!socket.ConnectServer())
@@ -147,12 +151,14 @@ namespace GameCaro
                 socket.isServer = true;
                 SetChessBoardEnabled(true);
                 socket.CreateServer();
+                btnLAN.Text = "Waiting...";
             }
             else
             {
                 socket.isServer = false;
                 SetChessBoardEnabled(false);
                 Listen();
+                btnLAN.Text = "Connected";
             }
         }
 
@@ -211,6 +217,7 @@ namespace GameCaro
                         tmCoolDown.Start();
                         ChessBoard.OtherPlayerMark(data.Point);
                         undoToolStripMenuItem.Enabled = true;
+                        btnLAN.Text = "Connected";
                     }));
                     break;
                 case (int)SocketCommand.UNDO:
