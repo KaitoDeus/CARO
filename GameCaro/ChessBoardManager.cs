@@ -104,6 +104,13 @@ namespace GameCaro
             set => playTimeLine = value; 
         }
 
+        private Stack<PlayInfo> redoTimeLine;
+        public Stack<PlayInfo> RedoTimeLine 
+        { 
+            get => redoTimeLine; 
+            set => redoTimeLine = value; 
+        }
+
         #endregion
 
         #region Initialize
@@ -132,6 +139,7 @@ namespace GameCaro
             ChessBoard.Controls.Clear();
 
             PlayTimeLine = new Stack<PlayInfo>();
+            RedoTimeLine = new Stack<PlayInfo>();
 
             CurrentPlayer = 0;
 
@@ -185,6 +193,9 @@ namespace GameCaro
             if (btn.BackgroundImage != null)
                 return;
 
+            // Clear redo stack khi có nước đi mới
+            RedoTimeLine.Clear();
+
             Mark(btn);
 
             PlayTimeLine.Push(new PlayInfo(GetChessPoint(btn), CurrentPlayer));
@@ -235,6 +246,7 @@ namespace GameCaro
                 return false;
 
             PlayInfo oldPoint = PlayTimeLine.Pop();
+            RedoTimeLine.Push(oldPoint); // Lưu để có thể redo
             Button btn = matrix[oldPoint.Point.Y][oldPoint.Point.X];
 
             // Reset ô cờ về trạng thái ban đầu
@@ -261,6 +273,28 @@ namespace GameCaro
                 CurrentPlayer = oldPoint.currentPlayer == 1 ? 0 : 1;
             }
 
+            ChangePlayer();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Redo nước đi đã undo
+        /// </summary>
+        public bool Redo()
+        {
+            if (RedoTimeLine.Count <= 0)
+                return false;
+
+            PlayInfo redoPoint = RedoTimeLine.Pop();
+            Button btn = Matrix[redoPoint.Point.Y][redoPoint.Point.X];
+
+            // Đánh lại nước đã undo
+            CurrentPlayer = redoPoint.currentPlayer;
+            Mark(btn);
+            PlayTimeLine.Push(redoPoint);
+
+            CurrentPlayer = CurrentPlayer == 1 ? 0 : 1;
             ChangePlayer();
 
             return true;
@@ -444,8 +478,8 @@ namespace GameCaro
         private void ChangePlayer()
         {
             PlayerName.Text = Player[CurrentPlayer].Name;
-            // Hiển thị hình ảnh player mark từ Resources
-            PlayerMark.Image = Player[CurrentPlayer].Mark;
+            // Hiển thị Avatar của player (khác với Mark - quân cờ)
+            PlayerMark.Image = Player[CurrentPlayer].Avatar;
         }
         #endregion
     }

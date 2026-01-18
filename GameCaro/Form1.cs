@@ -13,6 +13,10 @@ namespace GameCaro
         #region Properties
         ChessBoardManager ChessBoard;
         SocketManager socket;
+        PlayerSettings playerSettings;
+        
+        // Game mode
+        private GameMode currentGameMode = GameMode.LocalMultiplayer;
         #endregion
 
         public Form1()
@@ -32,6 +36,12 @@ namespace GameCaro
             tmCoolDown.Interval = Cons.COOL_DOWN_INTERVAL;
 
             socket = new SocketManager();
+
+            // Load player settings (tên và avatar đã lưu)
+            LoadPlayerSettings();
+
+            // Khởi tạo ComboBox game mode (mặc định là 2 người chơi)
+            cboGameMode.SelectedIndex = 0; // 0: 2 người chơi, 1: LAN
 
             NewGame();
         }
@@ -56,11 +66,11 @@ namespace GameCaro
         {
             prcbCoolDown.Value = 0;
             tmCoolDown.Stop();
-            undoToolStripMenuItem.Enabled = true;
             lblCountO.Text = "O:0";
             lblCountX.Text = "X:0";
 
             ChessBoard.DrawChessBoard();
+            UpdateMenuForGameMode();
         }
 
         void Quit()
@@ -70,27 +80,74 @@ namespace GameCaro
 
         void Undo()
         {
+            if (currentGameMode == GameMode.LAN) return;
             ChessBoard.Undo();
             prcbCoolDown.Value = 0;
         }
 
+        void Redo()
+        {
+            if (currentGameMode == GameMode.LAN) return;
+            ChessBoard.Redo();
+            prcbCoolDown.Value = 0;
+        }
+
+        /// <summary>
+        /// Cập nhật menu và buttons theo chế độ chơi
+        /// </summary>
+        void UpdateMenuForGameMode()
+        {
+            bool allowUndoRedo = currentGameMode != GameMode.LAN;
+            bool canUndo = allowUndoRedo && ChessBoard.PlayTimeLine.Count > 0;
+            bool canRedo = allowUndoRedo && ChessBoard.RedoTimeLine.Count > 0;
+            
+            // Cập nhật menu items
+            undoToolStripMenuItem.Enabled = canUndo;
+            redoToolStripMenuItem.Enabled = canRedo;
+            
+            // Cập nhật buttons trong panel4
+            btnUndo.Enabled = canUndo;
+            btnRedo.Enabled = canRedo;
+        }
+
         private void ChessBoard_PlayerMarked(object sender, ButtonClickEvent e)
         {
-            tmCoolDown.Start();
-            SetChessBoardEnabled(false);
+            UpdateMenuForGameMode();
+            
+            // Reset và start timer cho mỗi lượt đánh
             prcbCoolDown.Value = 0;
+            tmCoolDown.Start();
+            
+            // Trong chế độ LAN, gửi data qua socket
+            if (currentGameMode == GameMode.LAN)
+            {
+                SetChessBoardEnabled(false);
 
-            socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", e.ClickedPoint));
+                socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", e.ClickedPoint));
 
-            undoToolStripMenuItem.Enabled = false;
+                undoToolStripMenuItem.Enabled = false;
+                redoToolStripMenuItem.Enabled = false;
 
-            Listen();
+                Listen();
+            }
         }
 
         private void ChessBoard_EndedGame(object sender, EventArgs e)
         {
             EndGame();
-            socket.Send(new SocketData((int)SocketCommand.END_GAME, "", new Point()));
+            
+            // Hiển thị thông báo người thắng
+            // Người thắng là người vừa đánh (trước khi đổi lượt, CurrentPlayer đã bị đổi nên người thắng là người còn lại)
+            int winner = ChessBoard.CurrentPlayer == 0 ? 1 : 0;
+            string winnerName = ChessBoard.Player[winner].Name;
+            string winnerMark = winner == 0 ? "O" : "X";
+            
+            MessageBox.Show($"Người chơi {winnerName} ({winnerMark}) đã thắng!", "Kết thúc", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            
+            if (currentGameMode == GameMode.LAN)
+            {
+                socket.Send(new SocketData((int)SocketCommand.END_GAME, "", new Point()));
+            }
         }
 
         private void tmCoolDown_Tick(object sender, EventArgs e)
@@ -114,6 +171,13 @@ namespace GameCaro
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Undo();
+            UpdateMenuForGameMode();
+        }
+
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Redo();
+            UpdateMenuForGameMode();
         }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -239,6 +303,165 @@ namespace GameCaro
             }
 
             Listen();
+        }
+
+        #region Game Mode and Undo/Redo Button Handlers
+        /// <summary>
+        /// Xử lý khi người dùng thay đổi chế độ chơi từ ComboBox
+        /// </summary>
+        private void cboGameMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GameMode newMode;
+            switch (cboGameMode.SelectedIndex)
+            {
+                case 0:
+                    newMode = GameMode.LocalMultiplayer;
+                    break;
+                case 1:
+                    newMode = GameMode.LAN;
+                    break;
+                default:
+                    newMode = GameMode.LocalMultiplayer;
+                    break;
+            }
+
+            if (currentGameMode != newMode)
+            {
+                currentGameMode = newMode;
+                NewGame();
+                
+                if (newMode == GameMode.LAN)
+                {
+                    SetChessBoardEnabled(false);
+                }
+                else
+                {
+                    SetChessBoardEnabled(true);
+                }
+            }
+        }
+
+        private void btnUndo_Click(object sender, EventArgs e)
+        {
+            Undo();
+            UpdateMenuForGameMode();
+        }
+        private void btnRedo_Click(object sender, EventArgs e)
+        {
+            Redo();
+            UpdateMenuForGameMode();
+        }
+        #endregion
+
+        /// <summary>
+        /// Load tên và avatar người chơi từ settings đã lưu
+        /// </summary>
+        private void LoadPlayerSettings()
+        {
+            playerSettings = PlayerSettings.Load();
+
+            // Cập nhật tên người chơi
+            ChessBoard.Player[0].Name = playerSettings.Player1Name;
+            ChessBoard.Player[1].Name = playerSettings.Player2Name;
+
+            // Load avatar nếu có
+            Image avatar1 = PlayerSettings.LoadAvatarImage(playerSettings.Player1AvatarPath);
+            if (avatar1 != null)
+            {
+                ChessBoard.Player[0].Avatar = avatar1;
+            }
+
+            Image avatar2 = PlayerSettings.LoadAvatarImage(playerSettings.Player2AvatarPath);
+            if (avatar2 != null)
+            {
+                ChessBoard.Player[1].Avatar = avatar2;
+            }
+        }
+
+        /// <summary>
+        /// Khi nhấn Enter trong ô tên, lưu tên người chơi
+        /// </summary>
+        private void txbPlayerName_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; // Tránh tiếng beep
+
+                string newName = txbPlayerName.Text.Trim();
+                if (!string.IsNullOrEmpty(newName))
+                {
+                    // Cập nhật tên cho người chơi hiện tại
+                    int currentPlayer = ChessBoard.CurrentPlayer;
+                    ChessBoard.Player[currentPlayer].Name = newName;
+
+                    // Lưu vào settings
+                    if (currentPlayer == 0)
+                    {
+                        playerSettings.Player1Name = newName;
+                    }
+                    else
+                    {
+                        playerSettings.Player2Name = newName;
+                    }
+                    playerSettings.Save();
+
+                    MessageBox.Show($"Đã lưu tên: {newName}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Mở hộp thoại chọn avatar cho người chơi hiện tại
+        /// </summary>
+        private void btnChooseAvatar_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Title = "Chọn Avatar";
+                openFileDialog.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp;*.gif";
+                openFileDialog.FilterIndex = 1;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        int currentPlayer = ChessBoard.CurrentPlayer;
+                        string sourcePath = openFileDialog.FileName;
+
+                        // Copy avatar vào thư mục Resources
+                        string savedPath = PlayerSettings.SaveAvatarToResources(sourcePath, currentPlayer);
+
+                        if (!string.IsNullOrEmpty(savedPath))
+                        {
+                            // Load avatar mới
+                            Image newAvatar = PlayerSettings.LoadAvatarImage(savedPath);
+                            if (newAvatar != null)
+                            {
+                                // Cập nhật avatar cho người chơi (không ảnh hưởng Mark - quân cờ)
+                                ChessBoard.Player[currentPlayer].Avatar = newAvatar;
+                                pctbMark.Image = newAvatar;
+
+                                // Lưu đường dẫn vào settings
+                                if (currentPlayer == 0)
+                                {
+                                    playerSettings.Player1AvatarPath = savedPath;
+                                }
+                                else
+                                {
+                                    playerSettings.Player2AvatarPath = savedPath;
+                                }
+                                playerSettings.Save();
+
+                                MessageBox.Show("Đã cập nhật avatar!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Lỗi khi chọn avatar: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
         }
         #endregion
     }
