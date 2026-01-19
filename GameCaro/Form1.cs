@@ -157,6 +157,16 @@ namespace GameCaro
             if(prcbCoolDown.Value >= prcbCoolDown.Maximum)
             {
                 EndGame();
+                
+                // Người thua là người hiện tại (đang chờ đánh), người thắng là người còn lại
+                int loser = ChessBoard.CurrentPlayer;
+                int winner = loser == 0 ? 1 : 0;
+                string winnerName = ChessBoard.Player[winner].Name;
+                string loserName = ChessBoard.Player[loser].Name;
+                
+                MessageBox.Show($"Hết giờ! {loserName} không đánh tiếp.\n{winnerName} thắng!", 
+                    "Hết giờ", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
                 socket.Send(new SocketData((int)SocketCommand.TIME_OUT, "", new Point()));
             }
         }

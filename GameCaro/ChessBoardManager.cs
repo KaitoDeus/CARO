@@ -151,7 +151,7 @@ namespace GameCaro
             int cellWidth = Cons.CHESS_WIDTH;
             int cellHeight = Cons.CHESS_HEIGHT;
             
-            // Sử dụng số lượng ô cố định từ Cons (50x25 = 1250 nút)
+            // Sử dụng số lượng ô cố định từ Cons
             int numCols = Cons.CHESS_BOARD_WIDTH;
             int numRows = Cons.CHESS_BOARD_HEIGHT;
             
