@@ -44,6 +44,7 @@
             this.lblCountX = new System.Windows.Forms.Label();
             this.lblCountO = new System.Windows.Forms.Label();
             this.pnlChessBoard = new System.Windows.Forms.Panel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.tmCoolDown = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -53,9 +54,15 @@
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txbMessage = new System.Windows.Forms.TextBox();
+            this.btnSend = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.txbLog = new System.Windows.Forms.TextBox();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pctbMark)).BeginInit();
+            this.pnlChessBoard.SuspendLayout();
             this.menuStrip1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel4
@@ -71,9 +78,9 @@
             this.panel4.Controls.Add(this.cboGameMode);
             this.panel4.Controls.Add(this.btnUndo);
             this.panel4.Controls.Add(this.btnRedo);
-            this.panel4.Location = new System.Drawing.Point(921, 489);
+            this.panel4.Location = new System.Drawing.Point(921, 494);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(331, 181);
+            this.panel4.Size = new System.Drawing.Size(331, 176);
             this.panel4.TabIndex = 3;
             // 
             // pctbMark
@@ -100,11 +107,11 @@
             // 
             // btnChooseAvatar
             // 
-            this.btnChooseAvatar.Location = new System.Drawing.Point(185, 139);
+            this.btnChooseAvatar.Location = new System.Drawing.Point(183, 139);
             this.btnChooseAvatar.Name = "btnChooseAvatar";
-            this.btnChooseAvatar.Size = new System.Drawing.Size(137, 26);
+            this.btnChooseAvatar.Size = new System.Drawing.Size(145, 26);
             this.btnChooseAvatar.TabIndex = 9;
-            this.btnChooseAvatar.Text = "Chọn Avatar";
+            this.btnChooseAvatar.Text = "Thay Avatar";
             this.btnChooseAvatar.UseVisualStyleBackColor = true;
             this.btnChooseAvatar.Click += new System.EventHandler(this.btnChooseAvatar_Click);
             // 
@@ -139,7 +146,7 @@
             this.cboGameMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGameMode.FormattingEnabled = true;
             this.cboGameMode.Items.AddRange(new object[] {
-            "2 người chơi",
+            "2 người/máy",
             "Chơi qua LAN"});
             this.cboGameMode.Location = new System.Drawing.Point(11, 50);
             this.cboGameMode.Name = "cboGameMode";
@@ -204,10 +211,18 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlChessBoard.BackColor = System.Drawing.SystemColors.Control;
+            this.pnlChessBoard.Controls.Add(this.flowLayoutPanel1);
             this.pnlChessBoard.Location = new System.Drawing.Point(15, 49);
             this.pnlChessBoard.Name = "pnlChessBoard";
             this.pnlChessBoard.Size = new System.Drawing.Size(900, 620);
             this.pnlChessBoard.TabIndex = 8;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(900, 98);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(200, 100);
+            this.flowLayoutPanel1.TabIndex = 0;
             // 
             // tmCoolDown
             // 
@@ -279,16 +294,54 @@
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.BackgroundImage = global::GameCaro.Properties.Resources.banner;
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.panel1.Location = new System.Drawing.Point(915, 49);
+            this.panel1.Location = new System.Drawing.Point(920, 49);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(349, 92);
+            this.panel1.Size = new System.Drawing.Size(332, 92);
             this.panel1.TabIndex = 1;
+            // 
+            // txbMessage
+            // 
+            this.txbMessage.Location = new System.Drawing.Point(12, 325);
+            this.txbMessage.Name = "txbMessage";
+            this.txbMessage.Size = new System.Drawing.Size(235, 20);
+            this.txbMessage.TabIndex = 11;
+            // 
+            // btnSend
+            // 
+            this.btnSend.Location = new System.Drawing.Point(253, 321);
+            this.btnSend.Name = "btnSend";
+            this.btnSend.Size = new System.Drawing.Size(75, 28);
+            this.btnSend.TabIndex = 12;
+            this.btnSend.Text = "Gửi tin nhắn";
+            this.btnSend.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.btnSend);
+            this.panel2.Controls.Add(this.txbMessage);
+            this.panel2.Controls.Add(this.txbLog);
+            this.panel2.Location = new System.Drawing.Point(920, 142);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(331, 351);
+            this.panel2.TabIndex = 13;
+            // 
+            // txbLog
+            // 
+            this.txbLog.Location = new System.Drawing.Point(12, 3);
+            this.txbLog.Multiline = true;
+            this.txbLog.Name = "txbLog";
+            this.txbLog.ReadOnly = true;
+            this.txbLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txbLog.Size = new System.Drawing.Size(316, 316);
+            this.txbLog.TabIndex = 10;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1263, 681);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.prcbCoolDown);
             this.Controls.Add(this.panel4);
@@ -299,6 +352,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(799, 500);
             this.Name = "Form1";
             this.Text = "CARO";
@@ -307,8 +361,11 @@
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pctbMark)).EndInit();
+            this.pnlChessBoard.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -338,6 +395,11 @@
         private System.Windows.Forms.ComboBox cboGameMode;
         private System.Windows.Forms.Button btnUndo;
         private System.Windows.Forms.Button btnRedo;
+        private System.Windows.Forms.TextBox txbMessage;
+        private System.Windows.Forms.Button btnSend;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.TextBox txbLog;
     }
 }
 

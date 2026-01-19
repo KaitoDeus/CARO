@@ -57,8 +57,8 @@ namespace GameCaro
 
         #region Both
         public string IP = "127.0.0.1";
-        public int PORT = 1412;
-        public const int BUFFER = 1024;
+        public int PORT = 9000;
+        public const int BUFFER = 2048;
         public bool isServer = true;
 
         public bool Send(object data)

@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 
 namespace GameCaro
 {
-    // Const (Tái sử dụng hằng số)
+    // Constance (hằng số)
     public class Cons
     {
         // Kích thước ô cờ
         public static int CHESS_WIDTH = 30;
         public static int CHESS_HEIGHT = 30;
 
-        // Kích thước bàn cờ (số lượng ô lớn để phủ kín cửa sổ)
-        public static int CHESS_BOARD_WIDTH = 50;
-        public static int CHESS_BOARD_HEIGHT = 40;
+        // Kích thước bàn cờ
+        public static int CHESS_BOARD_WIDTH = 30;
+        public static int CHESS_BOARD_HEIGHT = 42;
 
         // Cấu hình đếm ngược
         public static int COOL_DOWN_STEP = 100;

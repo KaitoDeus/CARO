@@ -6,7 +6,6 @@ namespace GameCaro
 {
     /// <summary>
     /// Lưu trữ và quản lý cài đặt người chơi (tên, avatar)
-    /// Sử dụng file text đơn giản thay vì JSON để tương thích .NET Framework 4.7.2
     /// </summary>
     public class PlayerSettings
     {
@@ -36,7 +35,7 @@ namespace GameCaro
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error saving settings: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Lỗi! không thể lưu thông tin người chơi: {ex.Message}");
             }
         }
 
@@ -80,7 +79,7 @@ namespace GameCaro
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading settings: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Lỗi! không thể lưu thông tin người chơi: {ex.Message}");
             }
             return settings;
         }
@@ -94,7 +93,6 @@ namespace GameCaro
             {
                 if (!string.IsNullOrEmpty(avatarPath) && File.Exists(avatarPath))
                 {
-                    // Load image without locking the file
                     using (var stream = new FileStream(avatarPath, FileMode.Open, FileAccess.Read))
                     {
                         return Image.FromStream(stream);
@@ -103,7 +101,7 @@ namespace GameCaro
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading avatar: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Lỗi! không lưu được avatar: {ex.Message}");
             }
             return null;
         }
@@ -125,14 +123,13 @@ namespace GameCaro
                 string avatarFileName = $"Avatar_P{playerIndex + 1}{extension}";
                 string destPath = Path.Combine(resourcesDir, avatarFileName);
 
-                // Copy file (overwrite if exists)
                 File.Copy(sourcePath, destPath, true);
 
                 return destPath;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error saving avatar: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Lỗi! không lưu được avatar: {ex.Message}");
                 return null;
             }
         }

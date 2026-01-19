@@ -114,13 +114,18 @@ namespace GameCaro
         {
             UpdateMenuForGameMode();
             
-            // Reset và start timer cho mỗi lượt đánh
+            // Dừng timer trước, reset về 0, rồi start lại
+            tmCoolDown.Stop();
             prcbCoolDown.Value = 0;
             tmCoolDown.Start();
             
             // Trong chế độ LAN, gửi data qua socket
             if (currentGameMode == GameMode.LAN)
             {
+                // Dừng timer của mình vì đến lượt đối phương
+                tmCoolDown.Stop();
+                prcbCoolDown.Value = 0;
+                
                 SetChessBoardEnabled(false);
 
                 socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", e.ClickedPoint));
@@ -137,7 +142,6 @@ namespace GameCaro
             EndGame();
             
             // Hiển thị thông báo người thắng
-            // Người thắng là người vừa đánh (trước khi đổi lượt, CurrentPlayer đã bị đổi nên người thắng là người còn lại)
             int winner = ChessBoard.CurrentPlayer == 0 ? 1 : 0;
             string winnerName = ChessBoard.Player[winner].Name;
             string winnerMark = winner == 0 ? "O" : "X";
@@ -158,7 +162,6 @@ namespace GameCaro
             {
                 EndGame();
                 
-                // Người thua là người hiện tại (đang chờ đánh), người thắng là người còn lại
                 int loser = ChessBoard.CurrentPlayer;
                 int winner = loser == 0 ? 1 : 0;
                 string winnerName = ChessBoard.Player[winner].Name;
@@ -214,7 +217,6 @@ namespace GameCaro
 
         private void btnLAN_Click(object sender, EventArgs e)
         {
-            // Disable nút LAN để tránh nhấn nhiều lần
             btnLAN.Enabled = false;
             txbIP.Enabled = false;
 
@@ -343,10 +345,12 @@ namespace GameCaro
                 if (newMode == GameMode.LAN)
                 {
                     SetChessBoardEnabled(false);
+                    btnChooseAvatar.Enabled = false; // Tắt thay avatar ở chế độ LAN
                 }
                 else
                 {
                     SetChessBoardEnabled(true);
+                    btnChooseAvatar.Enabled = true; // Bật thay avatar ở chế độ 2 người/máy
                 }
             }
         }
@@ -427,8 +431,7 @@ namespace GameCaro
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                openFileDialog.Title = "Chọn Avatar";
-                openFileDialog.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp;*.gif";
+                openFileDialog.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp;";
                 openFileDialog.FilterIndex = 1;
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)

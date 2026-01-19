@@ -23,7 +23,6 @@ namespace GameCaro
             set => mark = value; 
         }
 
-        // Avatar riêng biệt với Mark - hiển thị ở panel thông tin người chơi
         private Image avatar;
         public Image Avatar
         {
@@ -35,7 +34,7 @@ namespace GameCaro
         {
             this.Name = name;
             this.Mark = mark;
-            this.Avatar = mark; // Mặc định avatar = mark
+            this.Avatar = mark;
         }
     }
 }
