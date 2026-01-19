@@ -305,6 +305,7 @@
             this.txbMessage.Name = "txbMessage";
             this.txbMessage.Size = new System.Drawing.Size(235, 20);
             this.txbMessage.TabIndex = 11;
+            this.txbMessage.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txbMessage_KeyDown);
             // 
             // btnSend
             // 
@@ -314,6 +315,7 @@
             this.btnSend.TabIndex = 12;
             this.btnSend.Text = "Gửi tin nhắn";
             this.btnSend.UseVisualStyleBackColor = true;
+            this.btnSend.Click += new System.EventHandler(this.btnSend_Click);
             // 
             // panel2
             // 

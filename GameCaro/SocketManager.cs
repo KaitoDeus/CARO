@@ -37,6 +37,10 @@ namespace GameCaro
 
         #region Server
         Socket server;
+        
+        // Event khi client kết nối thành công (dùng để Server bắt đầu Listen)
+        public event EventHandler ClientConnected;
+        
         public void CreateServer()
         {
             IPEndPoint iep = new IPEndPoint(IPAddress.Parse(IP), PORT);
@@ -48,6 +52,8 @@ namespace GameCaro
             Thread acceptClient = new Thread(() =>
             {
                 client = server.Accept();
+                // Kích hoạt event khi client kết nối
+                ClientConnected?.Invoke(this, EventArgs.Empty);
             });
             acceptClient.IsBackground = true;
             acceptClient.Start();

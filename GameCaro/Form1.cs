@@ -17,6 +17,9 @@ namespace GameCaro
         
         // Game mode
         private GameMode currentGameMode = GameMode.LocalMultiplayer;
+        
+        // Tên người chơi trong chat (được lưu lúc kết nối LAN, không thay đổi trong suốt phiên chơi)
+        private string myChatName = "";
         #endregion
 
         public Form1()
@@ -36,12 +39,18 @@ namespace GameCaro
             tmCoolDown.Interval = Cons.COOL_DOWN_INTERVAL;
 
             socket = new SocketManager();
+            
+            // Đăng ký event khi client kết nối (để Server bắt đầu Listen)
+            socket.ClientConnected += Socket_ClientConnected;
 
             // Load player settings (tên và avatar đã lưu)
             LoadPlayerSettings();
 
             // Khởi tạo ComboBox game mode (mặc định là 2 người chơi)
             cboGameMode.SelectedIndex = 0; // 0: 2 người chơi, 1: LAN
+
+            // Vô hiệu hoá chat mặc định (chỉ bật khi LAN)
+            SetChatEnabled(false);
 
             NewGame();
         }
@@ -221,10 +230,22 @@ namespace GameCaro
             txbIP.Enabled = false;
 
             socket.IP = txbIP.Text;
+            
+            // Lưu tên người chơi tại thời điểm kết nối để dùng cho chat
+            myChatName = txbPlayerName.Text.Trim();
+            if (string.IsNullOrEmpty(myChatName))
+            {
+                myChatName = socket.isServer ? "Player O" : "Player X";
+            }
 
             if (!socket.ConnectServer())
             {
                 socket.isServer = true;
+                // Nếu chưa có tên, gán mặc định cho Server
+                if (string.IsNullOrEmpty(myChatName) || myChatName == "Player X")
+                {
+                    myChatName = "Player O";
+                }
                 SetChessBoardEnabled(true);
                 socket.CreateServer();
                 btnLAN.Text = "Chờ kết nối...";
@@ -232,10 +253,33 @@ namespace GameCaro
             else
             {
                 socket.isServer = false;
+                // Nếu chưa có tên, gán mặc định cho Client
+                if (string.IsNullOrEmpty(myChatName) || myChatName == "Player O")
+                {
+                    myChatName = "Player X";
+                }
                 SetChessBoardEnabled(false);
                 Listen();
                 btnLAN.Text = "Đã kết nối";
             }
+
+            // Hiện bảng chat và khóa đổi tên khi đã vào chế độ LAN
+            //panel2.Visible = true;
+            txbPlayerName.ReadOnly = true;
+            btnChooseAvatar.Enabled = false;
+        }
+
+        /// <summary>
+        /// Xử lý khi có client kết nối vào server
+        /// </summary>
+        private void Socket_ClientConnected(object sender, EventArgs e)
+        {
+            // Khi client kết nối, Server bắt đầu Listen để nhận dữ liệu
+            this.Invoke((MethodInvoker)(() =>
+            {
+                btnLAN.Text = "Đã kết nối";
+                Listen();
+            }));
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -310,6 +354,18 @@ namespace GameCaro
                     tmCoolDown.Stop();
                     MessageBox.Show("Đối phương đã thoát khỏi trò chơi", "Thông báo");
                     break;
+                case (int)SocketCommand.CHAT_MESSAGE:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        // Nhận tin nhắn từ đối thủ (Format: "Name|Message")
+                        string[] parts = data.Message.Split(new char[] { '|' }, 2);
+                        string senderName = parts.Length > 1 ? parts[0] : "Player";
+                        string chatMessage = parts.Length > 1 ? parts[1] : data.Message;
+                        
+                        // Hiển thị tin nhắn
+                        AppendChatMessage(senderName, chatMessage);
+                    }));
+                    break;
                 default:
                     break;
             }
@@ -317,7 +373,7 @@ namespace GameCaro
             Listen();
         }
 
-        #region Game Mode and Undo/Redo Button Handlers
+        #region Game Mode and Undo/Redo
         /// <summary>
         /// Xử lý khi người dùng thay đổi chế độ chơi từ ComboBox
         /// </summary>
@@ -346,11 +402,13 @@ namespace GameCaro
                 {
                     SetChessBoardEnabled(false);
                     btnChooseAvatar.Enabled = false; // Tắt thay avatar ở chế độ LAN
+                    SetChatEnabled(true); // Bật chat khi ở chế độ LAN
                 }
                 else
                 {
                     SetChessBoardEnabled(true);
                     btnChooseAvatar.Enabled = true; // Bật thay avatar ở chế độ 2 người/máy
+                    SetChatEnabled(false); // Tắt chat khi không phải chế độ LAN
                 }
             }
         }
@@ -476,6 +534,96 @@ namespace GameCaro
                 }
             }
         }
+
+        #region Chat Feature
+        /// <summary>
+        /// Bật/tắt tính năng chat
+        /// </summary>
+        private void SetChatEnabled(bool enabled)
+        {
+            txbMessage.Enabled = enabled;
+            btnSend.Enabled = enabled;
+            txbLog.Enabled = enabled;
+            
+            if (!enabled)
+            {
+                txbLog.Text = "Chat chỉ khả dụng khi chơi qua LAN";
+            }
+            else
+            {
+                txbLog.Clear();
+            }
+        }
+
+        /// <summary>
+        /// Gửi tin nhắn chat qua socket
+        /// </summary>
+        private void SendChatMessage()
+        {
+            if (currentGameMode != GameMode.LAN)
+                return;
+
+            string message = txbMessage.Text.Trim();
+            if (string.IsNullOrEmpty(message))
+                return;
+
+            // Tên người gửi cố định theo vai trò: Server -> Player 1, Client -> Player 2
+            string chatName = socket.isServer ? "Player 1" : "Player 2";
+
+            // Hiển thị tin nhắn của mình lên log
+            AppendChatMessage(chatName, message);
+
+            // Gửi tin nhắn qua socket (format: "Name|Message")
+            socket.Send(new SocketData((int)SocketCommand.CHAT_MESSAGE, chatName + "|" + message, new Point()));
+
+            // Xóa nội dung textbox
+            txbMessage.Clear();
+            txbMessage.Focus();
+        }
+
+        /// <summary>
+        /// Thêm tin nhắn vào log chat
+        /// </summary>
+        private void AppendChatMessage(string sender, string message)
+        {
+            string timestamp = DateTime.Now.ToString("HH:mm:ss");
+            string formattedMessage = $"[{timestamp}] {sender}: {message}";
+            
+            if (txbLog.Text.Length > 0)
+            {
+                txbLog.AppendText(Environment.NewLine + formattedMessage);
+            }
+            else
+            {
+                txbLog.Text = formattedMessage;
+            }
+
+            // Tự động cuộn xuống cuối
+            txbLog.SelectionStart = txbLog.Text.Length;
+            txbLog.ScrollToCaret();
+        }
+
+        /// <summary>
+        /// Xử lý khi nhấn nút Gửi tin nhắn
+        /// </summary>
+        private void btnSend_Click(object sender, EventArgs e)
+        {
+            SendChatMessage();
+        }
+
+        /// <summary>
+        /// Xử lý khi nhấn Enter trong ô nhập tin nhắn
+        /// </summary>
+        private void txbMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true; 
+                SendChatMessage();
+            }
+        }
+        #endregion
+
         #endregion
     }
 }
