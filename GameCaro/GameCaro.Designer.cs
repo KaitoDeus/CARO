@@ -300,27 +300,27 @@
             this.changeNameAvatarToolStripMenuItem,
             this.sendMessageToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
-            this.helpToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
             this.helpToolStripMenuItem.Text = "Hướng dẫn";
             // 
             // howToPlayToolStripMenuItem
             // 
             this.howToPlayToolStripMenuItem.Name = "howToPlayToolStripMenuItem";
-            this.howToPlayToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.howToPlayToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.howToPlayToolStripMenuItem.Text = "Hướng dẫn chơi";
             this.howToPlayToolStripMenuItem.Click += new System.EventHandler(this.howToPlayToolStripMenuItem_Click);
             // 
             // changeNameAvatarToolStripMenuItem
             // 
             this.changeNameAvatarToolStripMenuItem.Name = "changeNameAvatarToolStripMenuItem";
-            this.changeNameAvatarToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.changeNameAvatarToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.changeNameAvatarToolStripMenuItem.Text = "Thay đổi tên && avatar";
             this.changeNameAvatarToolStripMenuItem.Click += new System.EventHandler(this.changeNameAvatarToolStripMenuItem_Click);
             // 
             // sendMessageToolStripMenuItem
             // 
             this.sendMessageToolStripMenuItem.Name = "sendMessageToolStripMenuItem";
-            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
             this.sendMessageToolStripMenuItem.Text = "Gửi tin nhắn (LAN)";
             this.sendMessageToolStripMenuItem.Click += new System.EventHandler(this.sendMessageToolStripMenuItem_Click);
             // 
@@ -337,6 +337,8 @@
             // 
             // txbMessage
             // 
+            this.txbMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txbMessage.Location = new System.Drawing.Point(12, 325);
             this.txbMessage.Name = "txbMessage";
             this.txbMessage.Size = new System.Drawing.Size(235, 20);
@@ -345,6 +347,8 @@
             // 
             // btnSend
             // 
+            this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSend.Location = new System.Drawing.Point(253, 321);
             this.btnSend.Name = "btnSend";
             this.btnSend.Size = new System.Drawing.Size(75, 28);
@@ -355,7 +359,8 @@
             // 
             // panel2
             // 
-            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.Controls.Add(this.btnSend);
             this.panel2.Controls.Add(this.txbMessage);
             this.panel2.Controls.Add(this.txbLog);
@@ -374,7 +379,7 @@
             this.txbLog.Size = new System.Drawing.Size(316, 316);
             this.txbLog.TabIndex = 10;
             // 
-            // Form1
+            // GameCaro
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -392,7 +397,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(799, 500);
-            this.Name = "Form1";
+            this.Name = "GameCaro";
             this.Text = "CARO";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Shown += new System.EventHandler(this.Form1_Shown);
