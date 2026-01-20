@@ -10,21 +10,21 @@ namespace GameCaro
     public class PlayInfo
     {
         private Point point;
-        public Point Point 
-        { 
-            get => point; 
-            set => point = value; 
+        public Point Point
+        {
+            get => point;
+            set => point = value;
         }
 
         private int CurrentPlayer;
-        public int currentPlayer 
-        { 
-            get => CurrentPlayer; 
-            set => CurrentPlayer = value; 
+        public int currentPlayer
+        {
+            get => CurrentPlayer;
+            set => CurrentPlayer = value;
         }
 
         public PlayInfo(Point point, int currentPlayer)
-        { 
+        {
             this.Point = point;
             this.CurrentPlayer = currentPlayer;
         }

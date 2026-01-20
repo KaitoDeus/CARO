@@ -1,6 +1,6 @@
 ﻿namespace GameCaro
 {
-    partial class Form1
+    partial class GameCaro
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameCaro));
             this.panel4 = new System.Windows.Forms.Panel();
             this.pctbMark = new System.Windows.Forms.PictureBox();
             this.btnLAN = new System.Windows.Forms.Button();
@@ -53,6 +53,10 @@
             this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.howToPlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.changeNameAvatarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sendMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.txbMessage = new System.Windows.Forms.TextBox();
             this.btnSend = new System.Windows.Forms.Button();
@@ -80,7 +84,7 @@
             this.panel4.Controls.Add(this.btnRedo);
             this.panel4.Location = new System.Drawing.Point(921, 494);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(331, 176);
+            this.panel4.Size = new System.Drawing.Size(331, 175);
             this.panel4.TabIndex = 3;
             // 
             // pctbMark
@@ -232,7 +236,8 @@
             // 
             this.menuStrip1.BackColor = System.Drawing.SystemColors.Menu;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menuToolStripMenuItem});
+            this.menuToolStripMenuItem,
+            this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1263, 24);
@@ -287,6 +292,37 @@
             this.quitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.howToPlayToolStripMenuItem,
+            this.changeNameAvatarToolStripMenuItem,
+            this.sendMessageToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(74, 20);
+            this.helpToolStripMenuItem.Text = "Hướng dẫn";
+            // 
+            // howToPlayToolStripMenuItem
+            // 
+            this.howToPlayToolStripMenuItem.Name = "howToPlayToolStripMenuItem";
+            this.howToPlayToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.howToPlayToolStripMenuItem.Text = "Hướng dẫn chơi";
+            this.howToPlayToolStripMenuItem.Click += new System.EventHandler(this.howToPlayToolStripMenuItem_Click);
+            // 
+            // changeNameAvatarToolStripMenuItem
+            // 
+            this.changeNameAvatarToolStripMenuItem.Name = "changeNameAvatarToolStripMenuItem";
+            this.changeNameAvatarToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.changeNameAvatarToolStripMenuItem.Text = "Thay đổi tên && avatar";
+            this.changeNameAvatarToolStripMenuItem.Click += new System.EventHandler(this.changeNameAvatarToolStripMenuItem_Click);
+            // 
+            // sendMessageToolStripMenuItem
+            // 
+            this.sendMessageToolStripMenuItem.Name = "sendMessageToolStripMenuItem";
+            this.sendMessageToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.sendMessageToolStripMenuItem.Text = "Gửi tin nhắn (LAN)";
+            this.sendMessageToolStripMenuItem.Click += new System.EventHandler(this.sendMessageToolStripMenuItem_Click);
             // 
             // panel1
             // 
@@ -402,6 +438,10 @@
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.TextBox txbLog;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem howToPlayToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem changeNameAvatarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sendMessageToolStripMenuItem;
     }
 }
 

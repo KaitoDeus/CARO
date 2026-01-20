@@ -6,6 +6,9 @@ using System.Windows.Forms;
 
 namespace GameCaro
 {
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
     internal static class Program
     {
         [STAThread]
@@ -13,7 +16,7 @@ namespace GameCaro
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            Application.Run(new GameCaro());
         }
     }
 }

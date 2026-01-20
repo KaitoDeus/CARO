@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Net.NetworkInformation;
 using System.Threading;
@@ -8,21 +8,18 @@ using static GameCaro.ChessBoardManager;
 
 namespace GameCaro
 {
-    public partial class Form1 : Form
+    public partial class GameCaro : Form
     {
         #region Properties
         ChessBoardManager ChessBoard;
         SocketManager socket;
         PlayerSettings playerSettings;
         
-        // Game mode
         private GameMode currentGameMode = GameMode.LocalMultiplayer;
-        
-        // Tên người chơi trong chat (được lưu lúc kết nối LAN, không thay đổi trong suốt phiên chơi)
         private string myChatName = "";
         #endregion
 
-        public Form1()
+        public GameCaro()
         {
             InitializeComponent();
 
@@ -39,26 +36,17 @@ namespace GameCaro
             tmCoolDown.Interval = Cons.COOL_DOWN_INTERVAL;
 
             socket = new SocketManager();
-            
-            // Đăng ký event khi client kết nối (để Server bắt đầu Listen)
             socket.ClientConnected += Socket_ClientConnected;
 
-            // Load player settings (tên và avatar đã lưu)
             LoadPlayerSettings();
 
-            // Khởi tạo ComboBox game mode (mặc định là 2 người chơi)
-            cboGameMode.SelectedIndex = 0; // 0: 2 người chơi, 1: LAN
-
-            // Vô hiệu hoá chat mặc định (chỉ bật khi LAN)
+            cboGameMode.SelectedIndex = 0;
             SetChatEnabled(false);
 
             NewGame();
         }
 
         #region Methods
-        /// <summary>
-        /// Bật/tắt bàn cờ
-        /// </summary>
         private void SetChessBoardEnabled(bool enabled)
         {
             pnlChessBoard.Enabled = enabled;
@@ -101,20 +89,15 @@ namespace GameCaro
             prcbCoolDown.Value = 0;
         }
 
-        /// <summary>
-        /// Cập nhật menu và buttons theo chế độ chơi
-        /// </summary>
         void UpdateMenuForGameMode()
         {
             bool allowUndoRedo = currentGameMode != GameMode.LAN;
             bool canUndo = allowUndoRedo && ChessBoard.PlayTimeLine.Count > 0;
             bool canRedo = allowUndoRedo && ChessBoard.RedoTimeLine.Count > 0;
             
-            // Cập nhật menu items
             undoToolStripMenuItem.Enabled = canUndo;
             redoToolStripMenuItem.Enabled = canRedo;
             
-            // Cập nhật buttons trong panel4
             btnUndo.Enabled = canUndo;
             btnRedo.Enabled = canRedo;
         }
@@ -123,15 +106,12 @@ namespace GameCaro
         {
             UpdateMenuForGameMode();
             
-            // Dừng timer trước, reset về 0, rồi start lại
             tmCoolDown.Stop();
             prcbCoolDown.Value = 0;
             tmCoolDown.Start();
             
-            // Trong chế độ LAN, gửi data qua socket
             if (currentGameMode == GameMode.LAN)
             {
-                // Dừng timer của mình vì đến lượt đối phương
                 tmCoolDown.Stop();
                 prcbCoolDown.Value = 0;
                 
@@ -150,7 +130,6 @@ namespace GameCaro
         {
             EndGame();
             
-            // Hiển thị thông báo người thắng
             int winner = ChessBoard.CurrentPlayer == 0 ? 1 : 0;
             string winnerName = ChessBoard.Player[winner].Name;
             string winnerMark = winner == 0 ? "O" : "X";
@@ -231,7 +210,6 @@ namespace GameCaro
 
             socket.IP = txbIP.Text;
             
-            // Lưu tên người chơi tại thời điểm kết nối để dùng cho chat
             myChatName = txbPlayerName.Text.Trim();
             if (string.IsNullOrEmpty(myChatName))
             {
@@ -241,7 +219,6 @@ namespace GameCaro
             if (!socket.ConnectServer())
             {
                 socket.isServer = true;
-                // Nếu chưa có tên, gán mặc định cho Server
                 if (string.IsNullOrEmpty(myChatName) || myChatName == "Player X")
                 {
                     myChatName = "Player O";
@@ -253,7 +230,6 @@ namespace GameCaro
             else
             {
                 socket.isServer = false;
-                // Nếu chưa có tên, gán mặc định cho Client
                 if (string.IsNullOrEmpty(myChatName) || myChatName == "Player O")
                 {
                     myChatName = "Player X";
@@ -263,18 +239,12 @@ namespace GameCaro
                 btnLAN.Text = "Đã kết nối";
             }
 
-            // Hiện bảng chat và khóa đổi tên khi đã vào chế độ LAN
-            //panel2.Visible = true;
             txbPlayerName.ReadOnly = true;
             btnChooseAvatar.Enabled = false;
         }
 
-        /// <summary>
-        /// Xử lý khi có client kết nối vào server
-        /// </summary>
         private void Socket_ClientConnected(object sender, EventArgs e)
         {
-            // Khi client kết nối, Server bắt đầu Listen để nhận dữ liệu
             this.Invoke((MethodInvoker)(() =>
             {
                 btnLAN.Text = "Đã kết nối";
@@ -300,7 +270,6 @@ namespace GameCaro
                 {
                     SocketData data = (SocketData)socket.Receive();
 
-                    // Kiểm tra nếu data null (không có kết nối hoặc kết nối bị đóng)
                     if (data != null)
                     {
                         ProcessData(data);
@@ -357,12 +326,10 @@ namespace GameCaro
                 case (int)SocketCommand.CHAT_MESSAGE:
                     this.Invoke((MethodInvoker)(() =>
                     {
-                        // Nhận tin nhắn từ đối thủ (Format: "Name|Message")
                         string[] parts = data.Message.Split(new char[] { '|' }, 2);
                         string senderName = parts.Length > 1 ? parts[0] : "Player";
                         string chatMessage = parts.Length > 1 ? parts[1] : data.Message;
                         
-                        // Hiển thị tin nhắn
                         AppendChatMessage(senderName, chatMessage);
                     }));
                     break;
@@ -374,9 +341,6 @@ namespace GameCaro
         }
 
         #region Game Mode and Undo/Redo
-        /// <summary>
-        /// Xử lý khi người dùng thay đổi chế độ chơi từ ComboBox
-        /// </summary>
         private void cboGameMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             GameMode newMode;
@@ -401,14 +365,14 @@ namespace GameCaro
                 if (newMode == GameMode.LAN)
                 {
                     SetChessBoardEnabled(false);
-                    btnChooseAvatar.Enabled = false; // Tắt thay avatar ở chế độ LAN
-                    SetChatEnabled(true); // Bật chat khi ở chế độ LAN
+                    btnChooseAvatar.Enabled = false;
+                    SetChatEnabled(true);
                 }
                 else
                 {
                     SetChessBoardEnabled(true);
-                    btnChooseAvatar.Enabled = true; // Bật thay avatar ở chế độ 2 người/máy
-                    SetChatEnabled(false); // Tắt chat khi không phải chế độ LAN
+                    btnChooseAvatar.Enabled = true;
+                    SetChatEnabled(false);
                 }
             }
         }
@@ -425,18 +389,13 @@ namespace GameCaro
         }
         #endregion
 
-        /// <summary>
-        /// Load tên và avatar người chơi từ settings đã lưu
-        /// </summary>
         private void LoadPlayerSettings()
         {
             playerSettings = PlayerSettings.Load();
 
-            // Cập nhật tên người chơi
             ChessBoard.Player[0].Name = playerSettings.Player1Name;
             ChessBoard.Player[1].Name = playerSettings.Player2Name;
 
-            // Load avatar nếu có
             Image avatar1 = PlayerSettings.LoadAvatarImage(playerSettings.Player1AvatarPath);
             if (avatar1 != null)
             {
@@ -450,23 +409,18 @@ namespace GameCaro
             }
         }
 
-        /// <summary>
-        /// Khi nhấn Enter trong ô tên, lưu tên người chơi
-        /// </summary>
         private void txbPlayerName_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                e.SuppressKeyPress = true; // Tránh tiếng beep
+                e.SuppressKeyPress = true;
 
                 string newName = txbPlayerName.Text.Trim();
                 if (!string.IsNullOrEmpty(newName))
                 {
-                    // Cập nhật tên cho người chơi hiện tại
                     int currentPlayer = ChessBoard.CurrentPlayer;
                     ChessBoard.Player[currentPlayer].Name = newName;
 
-                    // Lưu vào settings
                     if (currentPlayer == 0)
                     {
                         playerSettings.Player1Name = newName;
@@ -482,9 +436,6 @@ namespace GameCaro
             }
         }
 
-        /// <summary>
-        /// Mở hộp thoại chọn avatar cho người chơi hiện tại
-        /// </summary>
         private void btnChooseAvatar_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -499,20 +450,16 @@ namespace GameCaro
                         int currentPlayer = ChessBoard.CurrentPlayer;
                         string sourcePath = openFileDialog.FileName;
 
-                        // Copy avatar vào thư mục Resources
                         string savedPath = PlayerSettings.SaveAvatarToResources(sourcePath, currentPlayer);
 
                         if (!string.IsNullOrEmpty(savedPath))
                         {
-                            // Load avatar mới
                             Image newAvatar = PlayerSettings.LoadAvatarImage(savedPath);
                             if (newAvatar != null)
                             {
-                                // Cập nhật avatar cho người chơi (không ảnh hưởng Mark - quân cờ)
                                 ChessBoard.Player[currentPlayer].Avatar = newAvatar;
                                 pctbMark.Image = newAvatar;
 
-                                // Lưu đường dẫn vào settings
                                 if (currentPlayer == 0)
                                 {
                                     playerSettings.Player1AvatarPath = savedPath;
@@ -536,9 +483,6 @@ namespace GameCaro
         }
 
         #region Chat Feature
-        /// <summary>
-        /// Bật/tắt tính năng chat
-        /// </summary>
         private void SetChatEnabled(bool enabled)
         {
             txbMessage.Enabled = enabled;
@@ -555,9 +499,6 @@ namespace GameCaro
             }
         }
 
-        /// <summary>
-        /// Gửi tin nhắn chat qua socket
-        /// </summary>
         private void SendChatMessage()
         {
             if (currentGameMode != GameMode.LAN)
@@ -567,23 +508,16 @@ namespace GameCaro
             if (string.IsNullOrEmpty(message))
                 return;
 
-            // Tên người gửi cố định theo vai trò: Server -> Player 1, Client -> Player 2
-            string chatName = socket.isServer ? "Player 1" : "Player 2";
+            string chatName = myChatName;
 
-            // Hiển thị tin nhắn của mình lên log
             AppendChatMessage(chatName, message);
 
-            // Gửi tin nhắn qua socket (format: "Name|Message")
             socket.Send(new SocketData((int)SocketCommand.CHAT_MESSAGE, chatName + "|" + message, new Point()));
 
-            // Xóa nội dung textbox
             txbMessage.Clear();
             txbMessage.Focus();
         }
 
-        /// <summary>
-        /// Thêm tin nhắn vào log chat
-        /// </summary>
         private void AppendChatMessage(string sender, string message)
         {
             string timestamp = DateTime.Now.ToString("HH:mm:ss");
@@ -598,22 +532,15 @@ namespace GameCaro
                 txbLog.Text = formattedMessage;
             }
 
-            // Tự động cuộn xuống cuối
             txbLog.SelectionStart = txbLog.Text.Length;
             txbLog.ScrollToCaret();
         }
 
-        /// <summary>
-        /// Xử lý khi nhấn nút Gửi tin nhắn
-        /// </summary>
         private void btnSend_Click(object sender, EventArgs e)
         {
             SendChatMessage();
         }
 
-        /// <summary>
-        /// Xử lý khi nhấn Enter trong ô nhập tin nhắn
-        /// </summary>
         private void txbMessage_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -621,6 +548,56 @@ namespace GameCaro
                 e.SuppressKeyPress = true; 
                 SendChatMessage();
             }
+        }
+        #endregion
+
+        #region Help Menu
+        private void howToPlayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string message = "HƯỚNG DẪN CHƠI CARO\n\n" +
+                "- Người chơi lần lượt đánh O và X lên bàn cờ.\n\n" +
+                "- Bên nào đạt 5 ký hiệu liên tiếp theo hàng, cột hoặc đường chéo sẽ THẮNG.\n\n" +
+                "- Mỗi lượt có 10 giây, hết giờ sẽ thua.\n\n" +
+                "CHẾ ĐỘ CHƠI:\n" +
+                "- 2 người/máy: Chơi trên cùng 1 máy tính\n" +
+                "- Chơi qua LAN: Chơi với người khác qua mạng LAN\n\n" +
+                "PHÍM TẮT:\n" +
+                "- Ctrl+N: Ván mới\n" +
+                "- Ctrl+Z: Undo\n" +
+                "- Ctrl+Y: Redo";
+            
+            MessageBox.Show(message, "Hướng dẫn chơi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void changeNameAvatarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string message = "THAY ĐỔI TÊN:\n\n" +
+                "1. Nhập tên mới vào ô 'Player O/X' bên phải màn hình.\n" +
+                "2. Nhấn phím Enter để lưu.\n" +
+                "3. Tên sẽ được lưu tự động và dùng cho các lần chơi sau.\n\n" +
+                "THAY ĐỔI AVATAR:\n\n" +
+                "1. Nhấn nút 'Thay Avatar' bên phải màn hình.\n" +
+                "2. Chọn file ảnh (PNG, JPG, BMP) từ máy tính.\n" +
+                "3. Avatar mới sẽ được hiển thị và lưu tự động.\n\n" +
+                "LƯU Ý:\n" +
+                "- Không thể đổi tên/avatar khi đang chơi qua LAN.";
+            
+            MessageBox.Show(message, "Thay đổi tên & avatar", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void sendMessageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string message = "GỬI TIN NHẮN (CHỈ KHẢ DỤNG KHI CHƠI QUA LAN)\n\n" +
+                "1. Chọn chế độ 'Chơi qua LAN' trong danh sách.\n\n" +
+                "2. Kết nối với đối thủ:\n" +
+                "   - Nhập địa chỉ IP của đối thủ.\n" +
+                "   - Nhấn nút 'LAN' để kết nối.\n\n" +
+                "3. Gửi tin nhắn:\n" +
+                "   - Nhập nội dung vào ô chat bên phải.\n" +
+                "   - Nhấn Enter hoặc nút 'Gửi tin nhắn'.\n\n" +
+                "4. Tin nhắn sẽ hiển thị với thời gian và tên người gửi.";
+            
+            MessageBox.Show(message, "Gửi tin nhắn", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         #endregion
 
