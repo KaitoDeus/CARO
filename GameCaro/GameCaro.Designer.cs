@@ -82,7 +82,7 @@
             this.panel4.Controls.Add(this.cboGameMode);
             this.panel4.Controls.Add(this.btnUndo);
             this.panel4.Controls.Add(this.btnRedo);
-            this.panel4.Location = new System.Drawing.Point(921, 494);
+            this.panel4.Location = new System.Drawing.Point(922, 494);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(331, 175);
             this.panel4.TabIndex = 3;
@@ -218,7 +218,7 @@
             this.pnlChessBoard.Controls.Add(this.flowLayoutPanel1);
             this.pnlChessBoard.Location = new System.Drawing.Point(15, 49);
             this.pnlChessBoard.Name = "pnlChessBoard";
-            this.pnlChessBoard.Size = new System.Drawing.Size(900, 620);
+            this.pnlChessBoard.Size = new System.Drawing.Size(901, 620);
             this.pnlChessBoard.TabIndex = 8;
             // 
             // flowLayoutPanel1
@@ -240,7 +240,7 @@
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1263, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1264, 24);
             this.menuStrip1.TabIndex = 9;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -330,7 +330,7 @@
             this.panel1.BackColor = System.Drawing.Color.Transparent;
             this.panel1.BackgroundImage = global::GameCaro.Properties.Resources.banner;
             this.panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.panel1.Location = new System.Drawing.Point(920, 49);
+            this.panel1.Location = new System.Drawing.Point(921, 49);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(332, 92);
             this.panel1.TabIndex = 1;
@@ -364,7 +364,7 @@
             this.panel2.Controls.Add(this.btnSend);
             this.panel2.Controls.Add(this.txbMessage);
             this.panel2.Controls.Add(this.txbLog);
-            this.panel2.Location = new System.Drawing.Point(920, 142);
+            this.panel2.Location = new System.Drawing.Point(921, 142);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(331, 351);
             this.panel2.TabIndex = 13;
@@ -383,7 +383,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1263, 681);
+            this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.prcbCoolDown);

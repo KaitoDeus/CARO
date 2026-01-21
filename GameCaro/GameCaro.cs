@@ -23,7 +23,7 @@ namespace GameCaro
         {
             InitializeComponent();
 
-            Control.CheckForIllegalCrossThreadCalls = false;
+            // Control.CheckForIllegalCrossThreadCalls = false;
 
             ChessBoard = new ChessBoardManager(pnlChessBoard, txbPlayerName, pctbMark, lblCountO, lblCountX);
             ChessBoard.EndedGame += ChessBoard_EndedGame;
@@ -310,8 +310,11 @@ namespace GameCaro
                     }));
                     break;
                 case (int)SocketCommand.UNDO:
+                    this.Invoke((MethodInvoker)(() =>
+                    {
                         Undo();
                         prcbCoolDown.Value = 0;
+                    }));
                     break;
                 case (int)SocketCommand.END_GAME:
                     MessageBox.Show("Kết thúc vì có 5 quân trên 1 hàng");
@@ -320,8 +323,11 @@ namespace GameCaro
                     MessageBox.Show("Hết giờ");
                     break;
                 case (int)SocketCommand.QUIT:
-                    tmCoolDown.Stop();
-                    MessageBox.Show("Đối phương đã thoát khỏi trò chơi", "Thông báo");
+                    this.Invoke((MethodInvoker)(() =>
+                    {
+                        tmCoolDown.Stop();
+                        MessageBox.Show("Đối phương đã thoát khỏi trò chơi", "Thông báo");
+                    }));
                     break;
                 case (int)SocketCommand.CHAT_MESSAGE:
                     this.Invoke((MethodInvoker)(() =>

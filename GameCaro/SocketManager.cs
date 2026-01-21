@@ -54,7 +54,7 @@ namespace GameCaro
         public void CreateServer()
         {
             // Tạo endpoint để bind
-            IPEndPoint iep = new IPEndPoint(IPAddress.Parse(IP), PORT);
+            IPEndPoint iep = new IPEndPoint(IPAddress.Any, PORT);
             
             // Tạo socket TCP
             server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
