@@ -34,43 +34,43 @@ namespace GameCaro
         private int currentPlayer;
         public int CurrentPlayer
         {
-            get => currentPlayer;
-            set => currentPlayer = value;
+            get { return currentPlayer; }
+            set { currentPlayer = value; }
         }
 
         private TextBox playerName;
         public TextBox PlayerName
         {
-            get => playerName;
-            set => playerName = value;
+            get { return playerName; }
+            set { playerName = value; }
         }
 
         private PictureBox playerMark;
         public PictureBox PlayerMark
         {
-            get => playerMark;
-            set => playerMark = value;
+            get { return playerMark; }
+            set { playerMark = value; }
         }
 
         private List<List<Button>> matrix;
         public List<List<Button>> Matrix
         {
-            get => matrix;
-            set => matrix = value;
+            get { return matrix; }
+            set { matrix = value; }
         }
 
         private Label labelCountO;
         public Label LabelCountO
         {
-            get => labelCountO;
-            set => labelCountO = value;
+            get { return labelCountO; }
+            set { labelCountO = value; }
         }
 
         private Label labelCountX;
         public Label LabelCountX
         {
-            get => labelCountX;
-            set => labelCountX = value;
+            get { return labelCountX; }
+            set { labelCountX = value; }
         }
 
         private int countO = 0;
@@ -101,15 +101,15 @@ namespace GameCaro
         private Stack<PlayInfo> playTimeLine;
         public Stack<PlayInfo> PlayTimeLine
         {
-            get => playTimeLine;
-            set => playTimeLine = value;
+            get { return playTimeLine; }
+            set { playTimeLine = value; }
         }
 
         private Stack<PlayInfo> redoTimeLine;
         public Stack<PlayInfo> RedoTimeLine
         {
-            get => redoTimeLine;
-            set => redoTimeLine = value;
+            get { return redoTimeLine; }
+            set { redoTimeLine = value; }
         }
 
         #endregion

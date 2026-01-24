@@ -12,15 +12,15 @@ namespace GameCaro
         private Point point;
         public Point Point
         {
-            get => point;
-            set => point = value;
+            get { return point; }
+            set { point = value; }
         }
 
         private int CurrentPlayer;
         public int currentPlayer
         {
-            get => CurrentPlayer;
-            set => CurrentPlayer = value;
+            get { return CurrentPlayer; }
+            set { CurrentPlayer = value; }
         }
 
         public PlayInfo(Point point, int currentPlayer)

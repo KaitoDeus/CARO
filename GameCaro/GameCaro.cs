@@ -3,8 +3,7 @@ using System.Drawing;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
-using static GameCaro.SocketData;
-using static GameCaro.ChessBoardManager;
+
 
 namespace GameCaro
 {
@@ -14,6 +13,7 @@ namespace GameCaro
         ChessBoardManager ChessBoard;
         SocketManager socket;
         PlayerSettings playerSettings;
+        LanPlayerSettings lanPlayerSettings;
         
         private GameMode currentGameMode = GameMode.LocalMultiplayer;
         private string myChatName = "";
@@ -50,6 +50,12 @@ namespace GameCaro
         private void SetChessBoardEnabled(bool enabled)
         {
             pnlChessBoard.Enabled = enabled;
+        }
+
+        void UpdatePlayerUI()
+        {
+            ChessBoard.PlayerName.Text = ChessBoard.Player[ChessBoard.CurrentPlayer].Name;
+            ChessBoard.PlayerMark.Image = ChessBoard.Player[ChessBoard.CurrentPlayer].Avatar;
         }
 
         void EndGame()
@@ -134,7 +140,7 @@ namespace GameCaro
             string winnerName = ChessBoard.Player[winner].Name;
             string winnerMark = winner == 0 ? "O" : "X";
             
-            MessageBox.Show($"Người chơi {winnerName} ({winnerMark}) đã thắng!", "Kết thúc", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(string.Format("Người chơi {0} ({1}) đã thắng!", winnerName, winnerMark), "Kết thúc", MessageBoxButtons.OK, MessageBoxIcon.Information);
             
             if (currentGameMode == GameMode.LAN)
             {
@@ -155,7 +161,7 @@ namespace GameCaro
                 string winnerName = ChessBoard.Player[winner].Name;
                 string loserName = ChessBoard.Player[loser].Name;
                 
-                MessageBox.Show($"Hết giờ! {loserName} không đánh tiếp.\n{winnerName} thắng!", 
+                MessageBox.Show(string.Format("Hết giờ! {0} không đánh tiếp.\n{1} thắng!", loserName, winnerName), 
                     "Hết giờ", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 
                 socket.Send(new SocketData((int)SocketCommand.TIME_OUT, "", new Point()));
@@ -210,19 +216,29 @@ namespace GameCaro
 
             socket.IP = txbIP.Text;
             
-            myChatName = txbPlayerName.Text.Trim();
+            // Lưu tên LAN hiện tại
+            lanPlayerSettings.PlayerName = txbPlayerName.Text.Trim();
+            lanPlayerSettings.Save();
+
+            myChatName = lanPlayerSettings.PlayerName;
             if (string.IsNullOrEmpty(myChatName))
             {
-                myChatName = socket.isServer ? "Player O" : "Player X";
+                myChatName = "LAN Player";
             }
 
             if (!socket.ConnectServer())
             {
                 socket.isServer = true;
-                if (string.IsNullOrEmpty(myChatName) || myChatName == "Player X")
-                {
-                    myChatName = "Player O";
-                }
+                
+                // Server là Player 1 (Index 0)
+                ChessBoard.Player[0].Name = lanPlayerSettings.PlayerName;
+                // Avatar đã được set trong LoadLanSettings hoặc khi chọn ảnh
+                
+                // Set tên mặc định cho đối thủ
+                ChessBoard.Player[1].Name = "Player X (Client)";
+                // Reset avatar đối thủ về mặc định
+                ChessBoard.Player[1].Avatar = Image.FromFile(Application.StartupPath + "\\Resources\\P2.png");
+
                 SetChessBoardEnabled(true);
                 socket.CreateServer();
                 btnLAN.Text = "Chờ kết nối...";
@@ -230,10 +246,22 @@ namespace GameCaro
             else
             {
                 socket.isServer = false;
-                if (string.IsNullOrEmpty(myChatName) || myChatName == "Player O")
+
+                // Client là Player 2 (Index 1)
+                ChessBoard.Player[1].Name = lanPlayerSettings.PlayerName;
+                
+                // Load avatar cho Player 2
+                Image avatar = PlayerSettings.LoadAvatarImage(lanPlayerSettings.AvatarPath);
+                if (avatar != null)
                 {
-                    myChatName = "Player X";
+                    ChessBoard.Player[1].Avatar = avatar;
                 }
+
+                // Set tên mặc định cho đối thủ (Server)
+                ChessBoard.Player[0].Name = "Player O (Server)";
+                // Reset avatar đối thủ về mặc định (tránh hiển thị avatar của mình do LoadLanSettings)
+                ChessBoard.Player[0].Avatar = Image.FromFile(Application.StartupPath + "\\Resources\\P1.png");
+
                 SetChessBoardEnabled(false);
                 Listen();
                 btnLAN.Text = "Đã kết nối";
@@ -371,14 +399,20 @@ namespace GameCaro
                 if (newMode == GameMode.LAN)
                 {
                     SetChessBoardEnabled(false);
-                    btnChooseAvatar.Enabled = false;
+                    btnChooseAvatar.Enabled = true;
                     SetChatEnabled(true);
+                    
+                    LoadLanSettings();
+                    UpdatePlayerUI();
                 }
                 else
                 {
                     SetChessBoardEnabled(true);
                     btnChooseAvatar.Enabled = true;
                     SetChatEnabled(false);
+                    
+                    LoadPlayerSettings();
+                    UpdatePlayerUI();
                 }
             }
         }
@@ -415,6 +449,21 @@ namespace GameCaro
             }
         }
 
+        private void LoadLanSettings()
+        {
+            lanPlayerSettings = LanPlayerSettings.Load();
+
+            // Ở màn hình chuẩn bị LAN, ta hiển thị thông tin của người chơi hiện tại vào Player 0 (mặc định)
+            // Để người dùng thấy và chỉnh sửa
+            ChessBoard.Player[0].Name = lanPlayerSettings.PlayerName;
+
+            Image avatar = PlayerSettings.LoadAvatarImage(lanPlayerSettings.AvatarPath);
+            if (avatar != null)
+            {
+                ChessBoard.Player[0].Avatar = avatar;
+            }
+        }
+
         private void txbPlayerName_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
@@ -427,17 +476,27 @@ namespace GameCaro
                     int currentPlayer = ChessBoard.CurrentPlayer;
                     ChessBoard.Player[currentPlayer].Name = newName;
 
-                    if (currentPlayer == 0)
+                    if (currentGameMode == GameMode.LAN)
                     {
-                        playerSettings.Player1Name = newName;
+                        // Chế độ LAN: Lưu vào LanPlayerSettings
+                        lanPlayerSettings.PlayerName = newName;
+                        lanPlayerSettings.Save();
                     }
                     else
                     {
-                        playerSettings.Player2Name = newName;
+                        // Chế độ thường: Lưu vào PlayerSettings
+                        if (currentPlayer == 0)
+                        {
+                            playerSettings.Player1Name = newName;
+                        }
+                        else
+                        {
+                            playerSettings.Player2Name = newName;
+                        }
+                        playerSettings.Save();
                     }
-                    playerSettings.Save();
 
-                    MessageBox.Show($"Đã lưu tên: {newName}", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(string.Format("Đã lưu tên: {0}", newName), "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -453,28 +512,45 @@ namespace GameCaro
                 {
                     try
                     {
-                        int currentPlayer = ChessBoard.CurrentPlayer;
                         string sourcePath = openFileDialog.FileName;
+                        string savedPath = "";
 
-                        string savedPath = PlayerSettings.SaveAvatarToResources(sourcePath, currentPlayer);
+                        if (currentGameMode == GameMode.LAN)
+                        {
+                            savedPath = PlayerSettings.SaveNamedAvatarToResources(sourcePath, "Avatar_LAN");
+                        }
+                        else
+                        {
+                            int currentPlayer = ChessBoard.CurrentPlayer;
+                            savedPath = PlayerSettings.SaveAvatarToResources(sourcePath, currentPlayer);
+                        }
 
                         if (!string.IsNullOrEmpty(savedPath))
                         {
                             Image newAvatar = PlayerSettings.LoadAvatarImage(savedPath);
                             if (newAvatar != null)
                             {
+                                int currentPlayer = ChessBoard.CurrentPlayer;
                                 ChessBoard.Player[currentPlayer].Avatar = newAvatar;
                                 pctbMark.Image = newAvatar;
 
-                                if (currentPlayer == 0)
+                                if (currentGameMode == GameMode.LAN)
                                 {
-                                    playerSettings.Player1AvatarPath = savedPath;
+                                    lanPlayerSettings.AvatarPath = savedPath;
+                                    lanPlayerSettings.Save();
                                 }
                                 else
                                 {
-                                    playerSettings.Player2AvatarPath = savedPath;
+                                    if (currentPlayer == 0)
+                                    {
+                                        playerSettings.Player1AvatarPath = savedPath;
+                                    }
+                                    else
+                                    {
+                                        playerSettings.Player2AvatarPath = savedPath;
+                                    }
+                                    playerSettings.Save();
                                 }
-                                playerSettings.Save();
 
                                 MessageBox.Show("Đã cập nhật avatar!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
@@ -482,7 +558,7 @@ namespace GameCaro
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Lỗi khi chọn avatar: {ex.Message}", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Lỗi khi chọn avatar: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -527,7 +603,7 @@ namespace GameCaro
         private void AppendChatMessage(string sender, string message)
         {
             string timestamp = DateTime.Now.ToString("HH:mm:ss");
-            string formattedMessage = $"[{timestamp}] {sender}: {message}";
+            string formattedMessage = string.Format("[{0}] {1}: {2}", timestamp, sender, message);
             
             if (txbLog.Text.Length > 0)
             {

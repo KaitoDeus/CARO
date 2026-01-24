@@ -12,14 +12,24 @@ namespace GameCaro
     public class PlayerSettings
     {
         #region Properties
-        private static string SettingsFilePath =>
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "player_settings.txt");
+        private static string SettingsFilePath
+        {
+            get { return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "player_settings.txt"); }
+        }
 
-        public string Player1Name { get; set; } = "Player O";
-        public string Player2Name { get; set; } = "Player X";
+        public string Player1Name { get; set; }
+        public string Player2Name { get; set; }
 
-        public string Player1AvatarPath { get; set; } = "";
-        public string Player2AvatarPath { get; set; } = "";
+        public string Player1AvatarPath { get; set; }
+        public string Player2AvatarPath { get; set; }
+
+        public PlayerSettings()
+        {
+            Player1Name = "Player O";
+            Player2Name = "Player X";
+            Player1AvatarPath = "";
+            Player2AvatarPath = "";
+        }
 
         #endregion
 
@@ -35,15 +45,15 @@ namespace GameCaro
             {
                 using (StreamWriter writer = new StreamWriter(SettingsFilePath))
                 {
-                    writer.WriteLine($"Player1Name={Player1Name}");
-                    writer.WriteLine($"Player2Name={Player2Name}");
-                    writer.WriteLine($"Player1AvatarPath={Player1AvatarPath}");
-                    writer.WriteLine($"Player2AvatarPath={Player2AvatarPath}");
+                    writer.WriteLine("Player1Name=" + Player1Name);
+                    writer.WriteLine("Player2Name=" + Player2Name);
+                    writer.WriteLine("Player1AvatarPath=" + Player1AvatarPath);
+                    writer.WriteLine("Player2AvatarPath=" + Player2AvatarPath);
                 }
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi! không thể lưu thông tin người chơi: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine("Lỗi! không thể lưu thông tin người chơi: " + ex.Message);
             }
         }
 
@@ -94,7 +104,7 @@ namespace GameCaro
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi! không thể đọc thông tin người chơi: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine("Lỗi! không thể đọc thông tin người chơi: " + ex.Message);
             }
             
             return settings;
@@ -120,10 +130,37 @@ namespace GameCaro
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi! không đọc được avatar: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine("Lỗi! không đọc được avatar: " + ex.Message);
             }
             
             return null;
+        }
+
+        public static string SaveNamedAvatarToResources(string sourcePath, string baseName)
+        {
+            try
+            {
+                string resourcesDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+                if (!Directory.Exists(resourcesDir))
+                {
+                    Directory.CreateDirectory(resourcesDir);
+                }
+
+                // Tạo tên file mới (giữ nguyên extension)
+                string extension = Path.GetExtension(sourcePath);
+                string avatarFileName = baseName + extension;
+                string destPath = Path.Combine(resourcesDir, avatarFileName);
+
+                // Copy file nguồn vào Resources (ghi đè nếu đã tồn tại)
+                File.Copy(sourcePath, destPath, true);
+
+                return destPath;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Lỗi! không lưu được avatar: " + ex.Message);
+                return null;
+            }
         }
 
         public static string SaveAvatarToResources(string sourcePath, int playerIndex)
@@ -138,7 +175,7 @@ namespace GameCaro
 
                 // Tạo tên file mới (giữ nguyên extension)
                 string extension = Path.GetExtension(sourcePath);
-                string avatarFileName = $"Avatar_P{playerIndex + 1}{extension}";
+                string avatarFileName = "Avatar_P" + (playerIndex + 1) + extension;
                 string destPath = Path.Combine(resourcesDir, avatarFileName);
 
                 // Copy file nguồn vào Resources (ghi đè nếu đã tồn tại)
@@ -148,7 +185,7 @@ namespace GameCaro
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Lỗi! không lưu được avatar: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine("Lỗi! không lưu được avatar: " + ex.Message);
                 return null;
             }
         }

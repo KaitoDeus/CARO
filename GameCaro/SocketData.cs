@@ -18,22 +18,22 @@ namespace GameCaro
         private int command;
         public int Command
         {
-            get => command;
-            set => command = value;
+            get { return command; }
+            set { command = value; }
         }
 
         private Point point;
         public Point Point
         {
-            get => point;
-            set => point = value;
+            get { return point; }
+            set { point = value; }
         }
 
         private string message;
         public string Message
         {
-            get => message;
-            set => message = value;
+            get { return message; }
+            set { message = value; }
         }
 
         #endregion
@@ -54,24 +54,24 @@ namespace GameCaro
         }
 
         #endregion
-
-        #region Enums
-
-        /// <summary>
-        /// Enum định nghĩa các loại lệnh có thể gửi qua Socket.
-        /// </summary>
-        public enum SocketCommand
-        {
-            SEND_POINT,
-            NOTIFY,
-            NEW_GAME,
-            UNDO,
-            END_GAME,
-            TIME_OUT,
-            QUIT,
-            CHAT_MESSAGE
-        }
-
-        #endregion
     }
+
+    #region Enums
+
+    /// <summary>
+    /// Enum định nghĩa các loại lệnh có thể gửi qua Socket.
+    /// </summary>
+    public enum SocketCommand
+    {
+        SEND_POINT,
+        NOTIFY,
+        NEW_GAME,
+        UNDO,
+        END_GAME,
+        TIME_OUT,
+        QUIT,
+        CHAT_MESSAGE
+    }
+
+    #endregion
 }

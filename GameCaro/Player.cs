@@ -12,22 +12,22 @@ namespace GameCaro
         private string name;
         public string Name
         {
-            get => name;
-            set => name = value;
+            get { return name; }
+            set { name = value; }
         }
 
         private Image mark;
         public Image Mark
         {
-            get => mark;
-            set => mark = value;
+            get { return mark; }
+            set { mark = value; }
         }
 
         private Image avatar;
         public Image Avatar
         {
-            get => avatar;
-            set => avatar = value;
+            get { return avatar; }
+            set { avatar = value; }
         }
 
         public Player(string name, Image mark)

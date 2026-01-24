@@ -72,7 +72,8 @@ namespace GameCaro
                 client = server.Accept();
                 
                 // Kích hoạt event để thông báo đã có client
-                ClientConnected?.Invoke(this, EventArgs.Empty);
+                if (ClientConnected != null)
+                    ClientConnected(this, EventArgs.Empty);
             });
             
             acceptClient.IsBackground = true; // Thread sẽ tự đóng khi app đóng

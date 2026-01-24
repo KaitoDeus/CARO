@@ -68,9 +68,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.Resources.Extensions" Version="4.6.0" />
-  </ItemGroup>
+
   <ItemGroup>
     <Compile Include="ChessBoardManager.cs" />
     <Compile Include="Cons.cs" />
@@ -93,6 +91,7 @@
     <Compile Include="SocketData.cs" />
     <Compile Include="SocketManager.cs" />
     <Compile Include="PlayerSettings.cs" />
+    <Compile Include="LanPlayerSettings.cs" />
     <EmbeddedResource Include="GameCaro.resx">
       <DependentUpon>GameCaro.cs</DependentUpon>
     </EmbeddedResource>
