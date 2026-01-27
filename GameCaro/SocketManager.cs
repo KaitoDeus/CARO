@@ -130,13 +130,13 @@ namespace GameCaro
         // Gửi mảng byte qua socket.
         private bool SendData(Socket target, byte[] data)
         {
-            return target.Send(data) == 1 ? true : false;
+            return target.Send(data) == data.Length;
         }
 
         // Nhận mảng byte từ socket.
         private bool ReceiveData(Socket target, byte[] data)
         {
-            return target.Receive(data) == 1 ? true : false;
+            return target.Receive(data) > 0;
         }
 
         // Serialize (nén) object thành mảng byte[].
