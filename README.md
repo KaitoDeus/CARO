@@ -1,89 +1,101 @@
-# Game Caro
+# GameCaro
 
-Một ứng dụng game Caro (Tic tac toe) cổ điển được xây dựng bằng **C# Windows Forms**. Dự án hỗ trợ chơi offline hai người trên cùng một máy và chơi online qua mạng LAN với tính năng trò chuyện tích hợp.
+## 1. Giới Thiệu Đề Tài
 
-## Tính Năng
+### Lý Do Chọn Đề Tài
 
-### Chế độ chơi
+Em chọn đề tài **Game Caro (Tic Tac Toe)** để rèn luyện kỹ năng **lập trình mạng (Socket)** và **Windows Forms**. Mục tiêu là tạo ra một ứng dụng tương tác realtime thay vì các bài tập quản lý dữ liệu đơn thuần.
 
-1.  **Local Multiplayer (2 người / máy):**
-    - Hai người chơi thay phiên nhau đánh trên cùng một máy tính.
-    - Hỗ trợ tính năng **Undo** (Đi lại) và **Redo** (Khôi phục nước đi).
-2.  **LAN Multiplayer (Chơi qua mạng LAN):**
-    - Kết nối hai máy tính trong cùng mạng LAN.
-    - Cơ chế tự động: Người đầu tiên kết nối sẽ là Server (Host), người sau sẽ kết nối vào như Client.
-    - Đồng bộ hóa bàn cờ và lượt đi theo thời gian thực.
+### Bài Toán Đặt Ra
 
-### Tiện ích & Giao tiếp
+- Kết nối hai người chơi trên hai máy tính khác nhau qua mạng LAN.
+- Đồng bộ tức thời dữ liệu game (nước đi, chat, kết quả) mà không có độ trễ.
+- Tối ưu hiệu năng đồ họa khi vẽ bàn cờ (sử dụng GDI+).
 
-- **Hệ thống Chat:** Nhắn tin trò chuyện trực tiếp giữa hai người chơi trong chế độ LAN.
-- **Tùy biến cá nhân:**
-  - Đổi tên người chơi.
-  - Thay đổi Avatar (ảnh đại diện) tùy ý từ máy tính.
-  - Tự động lưu thông tin người chơi cho các lần sau.
-- **Luật chơi:**
-  - Bên nào đạt **5 quân liên tiếp** (ngang, dọc, chéo) sẽ thắng.
-  - Có thanh đếm ngược thời gian cho mỗi lượt đi (Cooldown).
+### Công Nghệ Sử Dụng
 
-## Công Nghệ Sử Dụng
+- **Ngôn Ngữ**: C#
+- **Framework**: Windows Forms (.NET)
+- **Đồ Họa**: GDI+
+- **Mạng**: `System.Net.Sockets` (TCP/IP)
+- **Đóng Gói Dữ Liệu**: `BinaryFormatter`
 
-- **Ngôn ngữ:** C#
-- **Framework:** .NET Framework 4.7.2
-- **Giao diện:** Windows Forms (WinForms)
-- **Mạng (Networking):** TCP/IP Sockets (`System.Net.Sockets`) để truyền tải dữ liệu nước đi và tin nhắn.
-- **Serialization:** BinaryFormatter để đóng gói dữ liệu truyền qua mạng.
+### Tính Năng Nổi Bật
 
-## Cài đặt và Chạy ứng dụng
+- **Gameplay Cổ Điển**: Luật chơi chuẩn chỉ - ai xếp được 3 quân thẳng hàng (ngang, dọc, chéo) trước là thắng.
+- **Chế Độ Chơi**:
+  - **Chơi 2 Người (Local)**: Hai bạn cùng ngồi chung máy đọ sức.
+  - **Chơi Qua LAN**: Kết nối mạng nội bộ để chiến với thằng bạn ngồi máy bên cạnh (đồng bộ realtime luôn nhé).
+- **Hệ Thống Mạng Thông Minh**:
+  - Kiến trúc Server/Client chạy ngầm xịn xò.
+  - Tự động nhận diện IP máy local (không cần gõ thủ công).
+  - Đồng bộ nước đi và trạng thái game siêu mượt.
+- **Chatting**: Tích hợp khung chat để vừa đánh vừa "gáy" với đối thủ trong trận LAN.
+- **Tùy Biến Cá Nhân**:
+  - Đổi tên nhân vật thoải mái.
+  - Import avatar riêng (nhìn cho ngầu).
+- **Tiện Ích Khác**:
+  - **Undo/Redo**: Đánh nhầm thì xin đi lại (chỉ áp dụng khi chơi Local thôi nhé 😅).
+  - **Đếm Ngược**: Thêm chút áp lực thời gian cho kịch tính.
 
-### Yêu cầu
+## 2. Kiến Trúc Hệ Thống
 
-- Visual Studio (2019, 2022 hoặc mới hơn).
-- .NET Framework 4.7.2 SDK.
-
-### Các bước thực hiện
-
-1.  **Clone dự án** về máy:
-    ```bash
-    git clone https://github.com/your-username/GameCaro.git
-    ```
-2.  Mở file giải pháp `GameCaro.sln` bằng Visual Studio.
-3.  Nhấn **F5** hoặc chọn **Start** để Build và chạy chương trình.
-
-## Hướng dẫn sử dụng
-
-### 1. Chơi Local (Mặc định)
-
-- Mở ứng dụng, bàn cờ sẽ sẵn sàng ngay lập tức.
-- Người chơi 1 đánh **O**, Người chơi 2 đánh **X**.
-- Sử dụng menu hoặc phím tắt (`Ctrl+Z`, `Ctrl+Y`) để Undo/Redo.
-
-### 2. Chơi qua LAN
-
-1.  Cả hai người chơi chọn chế độ **LAN** trong hộp chọn chế độ (bên phải).
-2.  **Máy Host (Người tạo phòng):**
-    - Nhấn nút **LAN** (hoặc đợi đối phương kết nối).
-    - Game sẽ tự động nhận diện IP nội bộ và lắng nghe kết nối.
-3.  **Máy Client (Người tham gia):**
-    - Nhập địa chỉ **IP** của máy Host vào ô IP.
-    - Nhấn nút **LAN** để kết nối.
-4.  Khi kết nối thành công, nút trạng thái sẽ hiện "Đã kết nối" và hai bên có thể bắt đầu chat và chơi.
-
-## Cấu trúc dự án
+Hệ thống của em được chia làm 3 khối chính: Form (Giao diện), Board Manager (Xử lý logic bàn cờ), và Socket Manager (Lo phần mạng mẽo).
 
 ```text
-GameCaro/
-├── GameCaro.sln              # File Solution của Visual Studio
-├── README.md                 # Tài liệu hướng dẫn
-└── GameCaro/                 # Thư mục mã nguồn chính (Project)
-    ├── Program.cs            # Điểm khởi chạy ứng dụng
-    ├── GameCaro.cs           # Form chính (Giao diện & Logic game)
-    ├── ChessBoardManager.cs  # Logic bàn cờ & kiểm tra thắng thua
-    ├── SocketManager.cs      # Quản lý kết nối mạng (LAN)
-    ├── SocketData.cs         # Cấu trúc dữ liệu gói tin mạng
-    ├── PlayerSettings.cs     # Quản lý cài đặt người chơi
-    ├── Cons.cs               # Các hằng số cấu hình game
-    ├── GameMode.cs           # Enum định nghĩa chế độ chơi
-    ├── Player.cs             # Lớp đối tượng Người chơi
-    ├── PlayInfo.cs           # Thông tin lượt chơi hiện tại
-    └── Resources/            # Tài nguyên hình ảnh, icon
++---------------------+           +------------------------+
+|      GameCaro       | <-------> |   ChessBoardManager    |
+|    (Giao Diện Chính)|           |   (Luật & Vẽ Bàn Cờ)   |
++---------------------+           +------------------------+
+          |
+          | Sử dụng
+          v
++---------------------+           +------------------------+
+|    SocketManager    | --------> |       SocketData       |
+|    (Kết Nối TCP)    |           |    (Gói Tin Mạng)      |
++---------------------+           +------------------------+
 ```
+
+Khi chơi LAN, máy **Host** sẽ đóng vai trò Server (Cầm quân O - Player 1), còn máy **Join** sẽ là Client (Cầm quân X - Player 2). Hai bên bắn gói tin `SocketData` qua lại với nhau.
+
+```text
+ [ MÁY HOST / SERVER ]                              [ MÁY CLIENT / JOINER ]
+        |                                                    |
+        | (1) Tạo Server (Start)                             |
+        | <------------------ (2) Kết nối -------------------|
+        |                                                    |
+        | ------------------ (3) Chấp nhận ----------------> |
+        |                                                    |
+ [ Player O Đánh ]                                           |
+        |                                                    |
+        | ---------------- (4) Gửi Tọa Độ -----------------> |
+        |                                             [ Cập nhật bàn cờ ]
+        |                                                    |
+        |                                             [ Player X Đánh ]
+        |                                                    |
+ [ Cập nhật bàn cờ ] <---------------- (5) Gửi Tọa Độ ----------------- |
+        |                                                    |
+```
+
+## 3. Hướng Dẫn Chơi (Chế Độ LAN)
+
+1.  **MÁY HOST (Tạo phòng)**:
+    - Mở game lên.
+    - Chọn **Game Mode** -> **LAN**.
+    - Cái ô `IP` nó sẽ tự hiện IP của máy mình. Bấm **CONNECT** (Nếu chưa có ai tạo thì nó tự tạo Server).
+    - Ngồi đợi bạn vào thôi.
+2.  **MÁY CLIENT (Vào phòng)**:
+    - Mở game trên máy khác (cùng mạng WiFi/LAN nhé).
+    - Chọn **Game Mode** -> **LAN**.
+    - Nhập IP của máy Host vào ô `IP`.
+    - Bấm **CONNECT** là chiến thôi!
+
+---
+
+## 4. Thông Tin Tác Giả
+
+Dự án này được thực hiện bởi:
+
+- **Họ tên**: Võ Anh Khải
+- **Email**: kenkaneki395@gmail.com
+- **Github**: [github.com/KaitoDeus](https://github.com/KaitoDeus)
