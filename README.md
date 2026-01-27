@@ -40,7 +40,7 @@ Em chọn đề tài **Game Caro (Tic Tac Toe)** để rèn luyện kỹ năng *
 
 ## 2. Kiến Trúc Hệ Thống
 
-Hệ thống của em được chia làm 3 khối chính: Form (Giao diện), Board Manager (Xử lý logic bàn cờ), và Socket Manager (Lo phần mạng mẽo).
+Hệ thống của em được chia làm 3 khối chính: Form (Giao diện), Board Manager (Xử lý bàn cờ), và Socket Manager.
 
 ```text
 +---------------------+           +------------------------+
@@ -78,16 +78,16 @@ Khi chơi LAN, máy **Host** sẽ đóng vai trò Server (Cầm quân O - Player
 ```
 
 ## 3. Hướng Dẫn Chơi (Chế Độ LAN)
-
+**Lưu ý: Cả hai máy phải RadminVPN**
 1.  **MÁY HOST (Tạo phòng)**:
     - Mở game lên.
     - Chọn **Game Mode** -> **LAN**.
-    - Cái ô `IP` nó sẽ tự hiện IP của máy mình. Bấm **CONNECT** (Nếu chưa có ai tạo thì nó tự tạo Server).
+    - Copy `IP` trong network của RadminVPN đã tạo và paste vào Form chương trình. Bấm **CONNECT** (Nếu chưa có ai tạo thì nó tự tạo Server).
     - Ngồi đợi bạn vào thôi.
 2.  **MÁY CLIENT (Vào phòng)**:
     - Mở game trên máy khác (cùng mạng WiFi/LAN nhé).
     - Chọn **Game Mode** -> **LAN**.
-    - Nhập IP của máy Host vào ô `IP`.
+    - Phần IP (làm tương tự với máy HOST).
     - Bấm **CONNECT** là chiến thôi!
 
 ---
