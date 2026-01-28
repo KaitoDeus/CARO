@@ -73,7 +73,7 @@ Khi chơi LAN, máy **Host** sẽ đóng vai trò Server (Cầm quân O - Player
         |                                                    |
         |                                             [ Player X Đánh ]
         |                                                    |
- [ Cập nhật bàn cờ ] <---------------- (5) Gửi Tọa Độ ----------------- |
+ [ Cập nhật bàn cờ ] --------- (5) Gửi Tọa Độ -------------- |
         |                                                    |
 ```
 
