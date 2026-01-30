@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Drawing;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -139,22 +139,45 @@ namespace GameCaro
             return target.Receive(data) > 0;
         }
 
-        // Serialize (nén) object thành mảng byte[].
+        // Serialize object thành mảng byte[] bằng BinaryWriter
         public byte[] SerializeData(Object o)
         {
-            MemoryStream ms = new MemoryStream();
-            BinaryFormatter bf1 = new BinaryFormatter(); // Sử dụng BinaryFormatter để chuyển đổi.
-            bf1.Serialize(ms, o);
-            return ms.ToArray();
+            SocketData data = (SocketData)o;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (BinaryWriter writer = new BinaryWriter(ms))
+                {
+                    writer.Write(data.Command);
+                    writer.Write(data.Point.X);
+                    writer.Write(data.Point.Y);
+                    writer.Write(data.Message ?? string.Empty);
+                }
+                return ms.ToArray();
+            }
         }
 
-        // Deserialize (giải nén) mảng byte[] thành object.
+        // Deserialize mảng byte[] thành object bằng BinaryReader
         public object DeserializeData(byte[] theByteArray)
         {
-            MemoryStream ms = new MemoryStream(theByteArray);
-            BinaryFormatter bf1 = new BinaryFormatter();
-            ms.Position = 0;
-            return bf1.Deserialize(ms);
+            try
+            {
+                using (MemoryStream ms = new MemoryStream(theByteArray))
+                {
+                    using (BinaryReader reader = new BinaryReader(ms))
+                    {
+                        int command = reader.ReadInt32();
+                        int x = reader.ReadInt32();
+                        int y = reader.ReadInt32();
+                        string message = reader.ReadString();
+
+                        return new SocketData(command, message, new Point(x, y));
+                    }
+                }
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>

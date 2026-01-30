@@ -11,7 +11,6 @@ namespace GameCaro
     /// Lớp đại diện cho dữ liệu được truyền qua Socket khi chơi LAN.
     /// Được serialize thành byte[] để gửi qua mạng.
     /// </summary>
-    [Serializable]
     public class SocketData
     {
         #region Properties
