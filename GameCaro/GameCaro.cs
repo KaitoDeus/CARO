@@ -681,6 +681,58 @@ namespace GameCaro
             
             MessageBox.Show(message, "Gửi tin nhắn", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Tạo Form mới
+            Form aboutForm = new Form();
+            aboutForm.Text = "Giới thiệu";
+            aboutForm.Size = new Size(550, 240);
+            aboutForm.StartPosition = FormStartPosition.CenterParent;
+            aboutForm.FormBorderStyle = FormBorderStyle.FixedDialog;
+            aboutForm.MaximizeBox = false;
+            aboutForm.MinimizeBox = false;
+
+            // PictureBox hiển thị avatar
+            PictureBox pbAvatar = new PictureBox();
+            pbAvatar.Size = new Size(150, 150);
+            pbAvatar.Location = new Point(20, 20);
+            pbAvatar.SizeMode = PictureBoxSizeMode.StretchImage;
+            pbAvatar.BorderStyle = BorderStyle.FixedSingle;
+            
+            try 
+            {
+                // Load hình từ thư mục Resources
+                string path = Application.StartupPath + "\\Resources\\avatar.jpg";
+                if (System.IO.File.Exists(path))
+                    pbAvatar.Image = Image.FromFile(path);
+            } 
+            catch { }
+            
+            aboutForm.Controls.Add(pbAvatar);
+
+            // Label thông tin
+            Label lblInfo = new Label();
+            lblInfo.Text = "ĐỒ ÁN LẬP TRÌNH MẠNG - GAME CARO LAN\n\n" +
+                           "Sinh viên thực hiện:\n" +
+                           "- Họ và tên: Võ Anh Khải\n" +
+                           "- Trường Đại học Giao Thông Vận Tải TP.HCM (UTH)";
+            lblInfo.Location = new Point(190, 20);
+            lblInfo.AutoSize = true;
+            lblInfo.Font = new Font("Arial", 10, FontStyle.Regular);
+            aboutForm.Controls.Add(lblInfo);
+            
+            // Nút OK
+            Button btnOK = new Button();
+            btnOK.Text = "Đóng";
+            btnOK.Size = new Size(100, 30);
+            btnOK.Location = new Point(410, 140);
+            btnOK.DialogResult = DialogResult.OK;
+            aboutForm.Controls.Add(btnOK);
+            
+            aboutForm.AcceptButton = btnOK;
+
+            aboutForm.ShowDialog();
+        }
         #endregion
 
         #endregion
