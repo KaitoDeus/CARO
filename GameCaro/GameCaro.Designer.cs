@@ -49,14 +49,16 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.undoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.redoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.howToPlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeNameAvatarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sendMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+
+            this.clearLocalInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearLanInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.txbMessage = new System.Windows.Forms.TextBox();
@@ -250,8 +252,9 @@
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newGameToolStripMenuItem,
-            this.undoToolStripMenuItem,
-            this.redoToolStripMenuItem,
+            this.newGameToolStripMenuItem,
+            this.clearLocalInfoToolStripMenuItem,
+            this.clearLanInfoToolStripMenuItem,
             this.toolStripSeparator1,
             this.quitToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
@@ -266,21 +269,20 @@
             this.newGameToolStripMenuItem.Text = "New game";
             this.newGameToolStripMenuItem.Click += new System.EventHandler(this.newGameToolStripMenuItem_Click);
             // 
-            // undoToolStripMenuItem
+            // clearLocalInfoToolStripMenuItem
             // 
-            this.undoToolStripMenuItem.Name = "undoToolStripMenuItem";
-            this.undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.undoToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.undoToolStripMenuItem.Text = "Undo";
-            this.undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
+            this.clearLocalInfoToolStripMenuItem.Name = "clearLocalInfoToolStripMenuItem";
+            this.clearLocalInfoToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.clearLocalInfoToolStripMenuItem.Text = "Xóa thông tin (2 người/máy)";
+            this.clearLocalInfoToolStripMenuItem.Click += new System.EventHandler(this.clearLocalInfoToolStripMenuItem_Click);
             // 
-            // redoToolStripMenuItem
+            // clearLanInfoToolStripMenuItem
             // 
-            this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
-            this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
-            this.redoToolStripMenuItem.Text = "Redo";
-            this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
+            this.clearLanInfoToolStripMenuItem.Name = "clearLanInfoToolStripMenuItem";
+            this.clearLanInfoToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.clearLanInfoToolStripMenuItem.Text = "Xóa thông tin (LAN)";
+            this.clearLanInfoToolStripMenuItem.Click += new System.EventHandler(this.clearLanInfoToolStripMenuItem_Click);
+
             // 
             // toolStripSeparator1
             // 
@@ -438,8 +440,7 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem newGameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
+
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
         private System.Windows.Forms.Button btnChooseAvatar;
@@ -457,6 +458,8 @@
         private System.Windows.Forms.ToolStripMenuItem changeNameAvatarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sendMessageToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearLocalInfoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearLanInfoToolStripMenuItem;
     }
 }
 

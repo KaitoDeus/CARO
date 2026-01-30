@@ -21,30 +21,39 @@ namespace GameCaro
 
         public GameCaro()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
 
-            // Control.CheckForIllegalCrossThreadCalls = false;
+                Control.CheckForIllegalCrossThreadCalls = false;
 
-            ChessBoard = new ChessBoardManager(pnlChessBoard, txbPlayerName, pctbMark, lblCountO, lblCountX);
-            ChessBoard.EndedGame += ChessBoard_EndedGame;
-            ChessBoard.PlayerMarked += ChessBoard_PlayerMarked;
+                ChessBoard = new ChessBoardManager(pnlChessBoard, txbPlayerName, pctbMark, lblCountO, lblCountX);
+                ChessBoard.EndedGame += ChessBoard_EndedGame;
+                ChessBoard.PlayerMarked += ChessBoard_PlayerMarked;
 
-            prcbCoolDown.Step = Cons.COOL_DOWN_STEP;
-            prcbCoolDown.Maximum = Cons.COOL_DOWN_TIME;
-            prcbCoolDown.Value = 0;
+                prcbCoolDown.Step = Cons.COOL_DOWN_STEP;
+                prcbCoolDown.Maximum = Cons.COOL_DOWN_TIME;
+                prcbCoolDown.Value = 0;
 
-            tmCoolDown.Interval = Cons.COOL_DOWN_INTERVAL;
+                tmCoolDown.Interval = Cons.COOL_DOWN_INTERVAL;
 
-            socket = new SocketManager();
-            socket.ClientConnected += Socket_ClientConnected;
+                socket = new SocketManager();
+                socket.ClientConnected += Socket_ClientConnected;
 
-            LoadPlayerSettings();
+                LoadPlayerSettings();
 
-            cboGameMode.SelectedIndex = 0;
-            SetChatEnabled(false);
+                cboGameMode.SelectedIndex = 0;
+                SetChatEnabled(false);
 
-            NewGame();
+                NewGame();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khởi động game: " + ex.Message + "\n" + ex.StackTrace, "Lỗi Nghiêm Trọng", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+
+
 
         #region Methods
         private void SetChessBoardEnabled(bool enabled)
@@ -61,7 +70,6 @@ namespace GameCaro
         void EndGame()
         {
             tmCoolDown.Stop();
-            undoToolStripMenuItem.Enabled = false;
             SetChessBoardEnabled(false);
         }
 
@@ -101,9 +109,6 @@ namespace GameCaro
             bool canUndo = allowUndoRedo && ChessBoard.PlayTimeLine.Count > 0;
             bool canRedo = allowUndoRedo && ChessBoard.RedoTimeLine.Count > 0;
             
-            undoToolStripMenuItem.Enabled = canUndo;
-            redoToolStripMenuItem.Enabled = canRedo;
-            
             btnUndo.Enabled = canUndo;
             btnRedo.Enabled = canRedo;
         }
@@ -124,9 +129,6 @@ namespace GameCaro
                 SetChessBoardEnabled(false);
 
                 socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", e.ClickedPoint));
-
-                undoToolStripMenuItem.Enabled = false;
-                redoToolStripMenuItem.Enabled = false;
 
                 Listen();
             }
@@ -175,17 +177,7 @@ namespace GameCaro
             SetChessBoardEnabled(true);
         }
 
-        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Undo();
-            UpdateMenuForGameMode();
-        }
 
-        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Redo();
-            UpdateMenuForGameMode();
-        }
 
         private void quitToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -206,6 +198,55 @@ namespace GameCaro
                 }
                 catch
                 { }
+            }
+        }
+
+        private void clearLocalInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn có chắc muốn xóa thông tin người chơi chế độ 2 người/máy về mặc định?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                // Reset Local settings
+                playerSettings = new PlayerSettings(); // Reset về mặc định
+                playerSettings.Save();
+
+                if (currentGameMode != GameMode.LAN)
+                {
+                    LoadPlayerSettings();
+                    UpdatePlayerUI();
+                    // Cập nhật tên hiển thị trên Textbox
+                    txbPlayerName.Text = ChessBoard.Player[ChessBoard.CurrentPlayer].Name;
+                    // Cập nhật hình ảnh đại diện
+                    pctbMark.Image = ChessBoard.Player[ChessBoard.CurrentPlayer].Avatar;
+                }
+
+                MessageBox.Show("Đã xóa thông tin chế độ 2 người/máy!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private void clearLanInfoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Bạn có chắc muốn xóa thông tin người chơi chế độ LAN về mặc định?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                // Reset LAN settings
+                lanPlayerSettings = new LanPlayerSettings(); // Reset về mặc định
+                lanPlayerSettings.Save();
+
+                if (currentGameMode == GameMode.LAN)
+                {
+                    // Cập nhật UI
+                    ChessBoard.Player[0].Name = lanPlayerSettings.PlayerName;
+                    
+                    LoadLanSettings();
+                    UpdatePlayerUI();
+                    
+                    // Cập nhật tên hiển thị trên Textbox
+                    txbPlayerName.Text = ChessBoard.Player[ChessBoard.CurrentPlayer].Name;
+
+                    // Cập nhật hình ảnh đại diện (góc trên bên phải)
+                    pctbMark.Image = ChessBoard.Player[0].Avatar;
+                }
+
+                MessageBox.Show("Đã xóa thông tin chế độ LAN!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -333,7 +374,6 @@ namespace GameCaro
                         SetChessBoardEnabled(true);
                         tmCoolDown.Start();
                         ChessBoard.OtherPlayerMark(data.Point);
-                        undoToolStripMenuItem.Enabled = true;
                         btnLAN.Text = "Đã kết nối";
                     }));
                     break;
