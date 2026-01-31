@@ -71,6 +71,7 @@
 
   <ItemGroup>
     <Compile Include="ChessBoardManager.cs" />
+    <Compile Include="AIPlayer.cs" />
     <Compile Include="Cons.cs" />
     <Compile Include="GameMode.cs" />
     <Compile Include="GameCaro.cs">

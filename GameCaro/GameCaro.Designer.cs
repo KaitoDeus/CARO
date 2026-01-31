@@ -153,6 +153,7 @@
             this.cboGameMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboGameMode.FormattingEnabled = true;
             this.cboGameMode.Items.AddRange(new object[] {
+            "Chơi với máy",
             "2 người/máy",
             "Chơi qua LAN"});
             this.cboGameMode.Location = new System.Drawing.Point(11, 50);

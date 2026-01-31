@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 
 namespace GameCaro
@@ -16,7 +17,9 @@ namespace GameCaro
         LanPlayerSettings lanPlayerSettings;
         
         private GameMode currentGameMode = GameMode.LocalMultiplayer;
+
         private string myChatName = "";
+        private AIPlayer aiPlayer;
         #endregion
 
         public GameCaro()
@@ -39,6 +42,8 @@ namespace GameCaro
 
                 socket = new SocketManager();
                 socket.ClientConnected += Socket_ClientConnected;
+
+                aiPlayer = new AIPlayer(ChessBoard);
 
                 LoadPlayerSettings();
 
@@ -92,7 +97,16 @@ namespace GameCaro
         void Undo()
         {
             if (currentGameMode == GameMode.LAN) return;
+            
             ChessBoard.Undo();
+            
+            // Trong chế độ PvC, nếu Undo xong mà đến lượt máy (Player 1)
+            // thì Undo thêm lần nữa để về lượt người chơi
+            if (currentGameMode == GameMode.PvC && ChessBoard.CurrentPlayer == 1)
+            {
+                ChessBoard.Undo();
+            }
+
             prcbCoolDown.Value = 0;
         }
 
@@ -131,6 +145,11 @@ namespace GameCaro
                 socket.Send(new SocketData((int)SocketCommand.SEND_POINT, "", e.ClickedPoint));
 
                 Listen();
+            }
+            
+            if (currentGameMode == GameMode.PvC && ChessBoard.CurrentPlayer == 1)
+            {
+                StartAI();
             }
         }
 
@@ -421,13 +440,16 @@ namespace GameCaro
             switch (cboGameMode.SelectedIndex)
             {
                 case 0:
-                    newMode = GameMode.LocalMultiplayer;
+                    newMode = GameMode.PvC;
                     break;
                 case 1:
+                    newMode = GameMode.LocalMultiplayer;
+                    break;
+                case 2:
                     newMode = GameMode.LAN;
                     break;
                 default:
-                    newMode = GameMode.LocalMultiplayer;
+                    newMode = GameMode.PvC;
                     break;
             }
 
@@ -443,6 +465,20 @@ namespace GameCaro
                     SetChatEnabled(true);
                     
                     LoadLanSettings();
+                    UpdatePlayerUI();
+                }
+
+                else if (newMode == GameMode.PvC)
+                {
+                    SetChessBoardEnabled(true);
+                    btnChooseAvatar.Enabled = true;
+                    SetChatEnabled(false);
+                    
+                    // Load settings nhưng set tên máy
+                    LoadPlayerSettings();
+                    ChessBoard.Player[1].Name = "Computer";
+                    ChessBoard.Player[1].Avatar = Image.FromFile(Application.StartupPath + "\\Resources\\P2.png");
+                    
                     UpdatePlayerUI();
                 }
                 else
@@ -774,6 +810,31 @@ namespace GameCaro
             aboutForm.ShowDialog();
         }
         #endregion
+
+        private async void StartAI()
+        {
+            // Khóa bàn cờ để người chơi không thể click lung tung trong lúc máy tính
+            SetChessBoardEnabled(false);
+
+            // Giảm độ trễ xuống còn 100ms để phản hồi nhanh hơn
+            await Task.Delay(100);
+
+            // Kiểm tra lại trạng thái game
+            if (currentGameMode != GameMode.PvC || ChessBoard.CurrentPlayer != 1)
+            {
+                SetChessBoardEnabled(true);
+                return;
+            }
+
+            // Tính toán nước đi
+            Point bestMove = aiPlayer.GetBestMove();
+            
+            // Thực hiện nước đi
+            ChessBoard.OtherPlayerMark(bestMove);
+
+            // Mở lại bàn cờ cho người chơi
+            SetChessBoardEnabled(true);
+        }
 
         #endregion
     }
