@@ -5,6 +5,11 @@ using System.Windows.Forms;
 
 namespace GameCaro
 {
+    /// <summary>
+    /// AI Player sử dụng thuật toán heuristic để tìm nước đi tốt nhất.
+    /// 
+    /// Sử dụng standard Button với BackgroundImage cho chess cells.
+    /// </summary>
     public class AIPlayer
     {
         private ChessBoardManager chessBoard;
@@ -54,9 +59,6 @@ namespace GameCaro
         {
             long totalScore = 0;
             // Image của máy (thường là Player 1 - X)
-            // Tuy nhiên cần logic linh hoạt hơn nếu muốn máy cầm O
-            // Giả sử máy luôn là người chơi hiện tại khi gọi hàm này.
-            // Nhưng ở đây ta cần so sánh với Image cụ thể.
             // Giả định: Người chơi thật là Player 0 (O), Máy là Player 1 (X).
             Image aiMark = chessBoard.Player[1].Mark;
             Image playerMark = chessBoard.Player[0].Mark;
@@ -78,9 +80,10 @@ namespace GameCaro
                     int c = col + dCol[dir] * k;
                     if (IsSafe(r, c))
                     {
-                        if (chessBoard.Matrix[r][c].BackgroundImage == aiMark)
+                        Image cellImage = chessBoard.Matrix[r][c].BackgroundImage;
+                        if (cellImage == aiMark)
                             allyCount++;
-                        else if (chessBoard.Matrix[r][c].BackgroundImage == playerMark)
+                        else if (cellImage == playerMark)
                         {
                             enemyCount++;
                             break; // Gặp quân địch thì dừng
@@ -97,9 +100,10 @@ namespace GameCaro
                     int c = col - dCol[dir] * k;
                     if (IsSafe(r, c))
                     {
-                        if (chessBoard.Matrix[r][c].BackgroundImage == aiMark)
+                        Image cellImage = chessBoard.Matrix[r][c].BackgroundImage;
+                        if (cellImage == aiMark)
                             allyCount++;
-                        else if (chessBoard.Matrix[r][c].BackgroundImage == playerMark)
+                        else if (cellImage == playerMark)
                         {
                             enemyCount++;
                             break;
@@ -144,9 +148,10 @@ namespace GameCaro
                     int c = col + dCol[dir] * k;
                     if (IsSafe(r, c))
                     {
-                        if (chessBoard.Matrix[r][c].BackgroundImage == playerMark)
+                        Image cellImage = chessBoard.Matrix[r][c].BackgroundImage;
+                        if (cellImage == playerMark)
                             enemyCount++;
-                        else if (chessBoard.Matrix[r][c].BackgroundImage == aiMark)
+                        else if (cellImage == aiMark)
                         {
                             allyCount++;
                             break;
@@ -163,9 +168,10 @@ namespace GameCaro
                     int c = col - dCol[dir] * k;
                     if (IsSafe(r, c))
                     {
-                        if (chessBoard.Matrix[r][c].BackgroundImage == playerMark)
+                        Image cellImage = chessBoard.Matrix[r][c].BackgroundImage;
+                        if (cellImage == playerMark)
                             enemyCount++;
-                        else if (chessBoard.Matrix[r][c].BackgroundImage == aiMark)
+                        else if (cellImage == aiMark)
                         {
                             allyCount++;
                             break;

@@ -16,7 +16,8 @@ namespace GameCaro
         public LanPlayerSettings()
         {
             PlayerName = "LAN Player";
-            AvatarPath = "";
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            AvatarPath = Path.Combine(baseDir, "Resources", "P1.png");
         }
 
         public void Save()

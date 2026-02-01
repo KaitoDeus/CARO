@@ -4,6 +4,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Windows.Forms;
 using System.Threading.Tasks;
+using Sunny.UI;
 
 
 namespace GameCaro
@@ -49,6 +50,7 @@ namespace GameCaro
 
                 cboGameMode.SelectedIndex = 0;
                 SetChatEnabled(false);
+                SetLanControlsEnabled(false);  // Disable LAN controls mặc định (chế độ PvC)
 
 
 
@@ -68,10 +70,19 @@ namespace GameCaro
             pnlChessBoard.Enabled = enabled;
         }
 
+        private void SetLanControlsEnabled(bool enabled)
+        {
+            btnLAN.Enabled = enabled;
+            txbIP.Enabled = enabled;
+        }
+
         void UpdatePlayerUI()
         {
             ChessBoard.PlayerName.Text = ChessBoard.Player[ChessBoard.CurrentPlayer].Name;
-            ChessBoard.PlayerMark.Image = ChessBoard.Player[ChessBoard.CurrentPlayer].Avatar;
+            // PlayerMark là PictureBox - gán Image trực tiếp
+            PictureBox avatarControl = (PictureBox)ChessBoard.PlayerMark;
+            avatarControl.Image = ChessBoard.Player[ChessBoard.CurrentPlayer].Avatar;
+            avatarControl.Refresh();  // Force repaint
         }
 
         void EndGame()
@@ -80,14 +91,15 @@ namespace GameCaro
             SetChessBoardEnabled(false);
         }
 
-        void NewGame()
+        async void NewGame()
         {
             prcbCoolDown.Value = 0;
             tmCoolDown.Stop();
             lblCountO.Text = "O:0";
             lblCountX.Text = "X:0";
 
-            ChessBoard.DrawChessBoard();
+            // Sử dụng animation khi vẽ bàn cờ
+            await ChessBoard.DrawChessBoardAnimatedAsync();
             UpdateMenuForGameMode();
         }
 
@@ -173,7 +185,8 @@ namespace GameCaro
 
         private void tmCoolDown_Tick(object sender, EventArgs e)
         {
-            prcbCoolDown.PerformStep();
+            // SiticoneProgressBar: tăng Value trực tiếp thay vì dùng PerformStep()
+            prcbCoolDown.Value = Math.Min(prcbCoolDown.Value + prcbCoolDown.Step, prcbCoolDown.Maximum);
 
             if(prcbCoolDown.Value >= prcbCoolDown.Maximum)
             {
@@ -465,6 +478,7 @@ namespace GameCaro
                     SetChessBoardEnabled(false);
                     btnChooseAvatar.Enabled = true;
                     SetChatEnabled(true);
+                    SetLanControlsEnabled(true);  // Bật LAN controls
                     
                     LoadLanSettings();
                     UpdatePlayerUI();
@@ -475,6 +489,7 @@ namespace GameCaro
                     SetChessBoardEnabled(true);
                     btnChooseAvatar.Enabled = true;
                     SetChatEnabled(false);
+                    SetLanControlsEnabled(false);  // Tắt LAN controls
                     
                     // Load settings nhưng set tên máy
                     LoadPlayerSettings();
@@ -488,6 +503,7 @@ namespace GameCaro
                     SetChessBoardEnabled(true);
                     btnChooseAvatar.Enabled = true;
                     SetChatEnabled(false);
+                    SetLanControlsEnabled(false);  // Tắt LAN controls
                     
                     LoadPlayerSettings();
                     UpdatePlayerUI();
@@ -610,7 +626,13 @@ namespace GameCaro
                             {
                                 int currentPlayer = ChessBoard.CurrentPlayer;
                                 ChessBoard.Player[currentPlayer].Avatar = newAvatar;
+                                
+                                // Cập nhật UI ngay lập tức - pctbMark là PictureBox
                                 pctbMark.Image = newAvatar;
+                                pctbMark.Refresh();
+                                
+                                // Gọi UpdatePlayerUI để đồng bộ
+                                UpdatePlayerUI();
 
                                 if (currentGameMode == GameMode.LAN)
                                 {
@@ -655,7 +677,7 @@ namespace GameCaro
             }
             else
             {
-                txbLog.Clear();
+                txbLog.Text = ""; // Clear text
             }
         }
 
@@ -685,15 +707,15 @@ namespace GameCaro
             
             if (txbLog.Text.Length > 0)
             {
-                txbLog.AppendText(Environment.NewLine + formattedMessage);
+                txbLog.Text += Environment.NewLine + formattedMessage;
             }
             else
             {
                 txbLog.Text = formattedMessage;
             }
 
-            txbLog.SelectionStart = txbLog.Text.Length;
-            txbLog.ScrollToCaret();
+            // SiticoneTextBox: scroll to end để hiển thị tin nhắn mới nhất
+            // Không có ScrollToCaret như TextBox thường, sử dụng alternative
         }
 
         private void btnSend_Click(object sender, EventArgs e)

@@ -27,8 +27,11 @@ namespace GameCaro
         {
             Player1Name = "Player O";
             Player2Name = "Player X";
-            Player1AvatarPath = "";
-            Player2AvatarPath = "";
+            
+            // Đặt đường dẫn mặc định
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            Player1AvatarPath = Path.Combine(baseDir, "Resources", "P1.png");
+            Player2AvatarPath = Path.Combine(baseDir, "Resources", "P2.png");
         }
 
         #endregion

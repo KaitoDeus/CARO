@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "CARO"
-#define MyAppVersion "0.0.1"
+#define MyAppVersion "0.0.2"
 #define MyAppPublisher "KaitoDeus"
 #define MyAppExeName "GameCaro.exe"
 
@@ -20,7 +20,7 @@ AllowNoIcons=yes
 ; Removing the following line to run in administrative mode (install for all users.)
 ; PrivilegesRequired=lowest
 OutputDir=Output
-OutputBaseFilename=GameCaroSetup
+OutputBaseFilename=GameCaroSetup_v0.0.2
 SetupIconFile=caro.ico
 UninstallDisplayIcon={app}\caro.ico
 Compression=lzma
@@ -35,8 +35,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "caro.ico"; DestDir: "{app}"
-Source: "bin\Release\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin\Debug\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "bin\Debug\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

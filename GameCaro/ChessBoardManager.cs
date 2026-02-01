@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Sunny.UI;
 
 namespace GameCaro
 {
@@ -12,13 +13,17 @@ namespace GameCaro
     /// Lớp quản lý bàn cờ và logic chơi game Caro.
     /// Chịu trách nhiệm: vẽ bàn cờ, xử lý đánh cờ, kiểm tra thắng thua,
     /// quản lý Undo/Redo, và theo dõi người chơi hiện tại.
+    /// 
+    /// [REFACTORED] Cập nhật để tương thích với SunnyUI controls.
+    /// Sử dụng standard Button cho chess cells (cần BackgroundImage).
     /// </summary>
     public class ChessBoardManager
     {
         #region Properties
 
-        private Panel chessBoard;
-        public Panel ChessBoard
+        // Sử dụng Control thay vì Panel để tương thích với UIPanel
+        private Control chessBoard;
+        public Control ChessBoard
         {
             get { return chessBoard; }
             set { chessBoard = value; }
@@ -38,20 +43,23 @@ namespace GameCaro
             set { currentPlayer = value; }
         }
 
-        private TextBox playerName;
-        public TextBox PlayerName
+        // Sử dụng Control thay vì TextBox để tương thích với UITextBox
+        private Control playerName;
+        public Control PlayerName
         {
             get { return playerName; }
             set { playerName = value; }
         }
 
-        private PictureBox playerMark;
-        public PictureBox PlayerMark
+        // Sử dụng Control thay vì PictureBox để tương thích với UIAvatar
+        private Control playerMark;
+        public Control PlayerMark
         {
             get { return playerMark; }
             set { playerMark = value; }
         }
 
+        // Sử dụng standard Button cho các ô cờ (vì cần BackgroundImage)
         private List<List<Button>> matrix;
         public List<List<Button>> Matrix
         {
@@ -116,7 +124,10 @@ namespace GameCaro
 
         #region Constructor
 
-        public ChessBoardManager(Panel chessBoard, TextBox playerName, PictureBox mark, Label lblCountO, Label lblCountX)
+        /// <summary>
+        /// Constructor với tham số Control thay vì types cụ thể để tương thích với SunnyUI.
+        /// </summary>
+        public ChessBoardManager(Control chessBoard, Control playerName, Control mark, Label lblCountO, Label lblCountX)
         {
             this.ChessBoard = chessBoard;
             this.PlayerName = playerName;
@@ -150,7 +161,7 @@ namespace GameCaro
             CurrentPlayer = 0;
             ChangePlayer();
 
-            // Khởi tạo ma trận rỗng
+            // Khởi tạo ma trận rỗng với standard Button
             Matrix = new List<List<Button>>();
 
             // Lấy kích thước ô từ hằng số
@@ -161,9 +172,9 @@ namespace GameCaro
             int numCols = Cons.CHESS_BOARD_WIDTH;
             int numRows = Cons.CHESS_BOARD_HEIGHT;
 
-            // Bắt đầu vẽ từ góc (0,0)
-            int startX = 0;
-            int startY = 0;
+            // Bắt đầu vẽ từ góc (5,5) để có padding
+            int startX = 5;
+            int startY = 5;
 
             // Tạo từng hàng
             for (int i = 0; i < numRows; i++)
@@ -173,22 +184,126 @@ namespace GameCaro
                 // Tạo từng ô trong hàng
                 for (int j = 0; j < numCols; j++)
                 {
+                    // Màu xen kẽ tạo hiệu ứng bàn cờ
+                    bool isEvenCell = (i + j) % 2 == 0;
+                    Color cellColor = isEvenCell 
+                        ? Color.FromArgb(255, 255, 255)    // Trắng
+                        : Color.FromArgb(245, 248, 252);   // Xanh nhạt
+
+                    // Sử dụng standard Button với styling cải tiến
                     Button btn = new Button()
                     {
                         Width = cellWidth,
                         Height = cellHeight,
                         Location = new Point(startX + j * cellWidth, startY + i * cellHeight),
                         Tag = i.ToString(), // Lưu row index vào Tag
-                        BackgroundImageLayout = ImageLayout.Stretch
+                        BackgroundImageLayout = ImageLayout.Stretch,
+                        
+                        // Modern styling
+                        Text = "",
+                        FlatStyle = FlatStyle.Flat,
+                        BackColor = cellColor,
+                        Cursor = Cursors.Hand
                     };
 
-                    // Đăng ký sự kiện click
+                    // Styling cho flat button với border
+                    btn.FlatAppearance.BorderColor = Color.FromArgb(200, 210, 220);
+                    btn.FlatAppearance.BorderSize = 1;
+                    btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(220, 240, 255);
+                    btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(180, 220, 255);
+
+                    // Đăng ký sự kiện click (GIỮ NGUYÊN LOGIC)
                     btn.Click += btn_Click;
 
                     // Thêm vào panel và ma trận
                     ChessBoard.Controls.Add(btn);
                     Matrix[i].Add(btn);
                 }
+            }
+
+            // Reset bộ đếm quân
+            countO = 0;
+            countX = 0;
+        }
+
+        /// <summary>
+        /// Vẽ bàn cờ với hiệu ứng animation từng hàng từ trên xuống
+        /// </summary>
+        public async Task DrawChessBoardAnimatedAsync()
+        {
+            // Bật bàn cờ và xóa các ô cũ
+            ChessBoard.Enabled = true;
+            ChessBoard.Controls.Clear();
+
+            // Reset các stack Undo/Redo
+            PlayTimeLine = new Stack<PlayInfo>();
+            RedoTimeLine = new Stack<PlayInfo>();
+
+            // Người chơi O đi trước
+            CurrentPlayer = 0;
+            ChangePlayer();
+
+            // Khởi tạo ma trận rỗng với standard Button
+            Matrix = new List<List<Button>>();
+
+            // Lấy kích thước ô từ hằng số
+            int cellWidth = Cons.CHESS_WIDTH;
+            int cellHeight = Cons.CHESS_HEIGHT;
+
+            // Lấy số hàng/cột từ hằng số
+            int numCols = Cons.CHESS_BOARD_WIDTH;
+            int numRows = Cons.CHESS_BOARD_HEIGHT;
+
+            // Bắt đầu vẽ từ góc (5,5) để có padding
+            int startX = 5;
+            int startY = 5;
+
+            // Tạo từng hàng với animation
+            for (int i = 0; i < numRows; i++)
+            {
+                Matrix.Add(new List<Button>());
+
+                // Tạo từng ô trong hàng
+                for (int j = 0; j < numCols; j++)
+                {
+                    // Màu xen kẽ tạo hiệu ứng bàn cờ
+                    bool isEvenCell = (i + j) % 2 == 0;
+                    Color cellColor = isEvenCell 
+                        ? Color.FromArgb(255, 255, 255)    // Trắng
+                        : Color.FromArgb(245, 248, 252);   // Xanh nhạt
+
+                    // Sử dụng standard Button với styling cải tiến
+                    Button btn = new Button()
+                    {
+                        Width = cellWidth,
+                        Height = cellHeight,
+                        Location = new Point(startX + j * cellWidth, startY + i * cellHeight),
+                        Tag = i.ToString(), // Lưu row index vào Tag
+                        BackgroundImageLayout = ImageLayout.Stretch,
+                        
+                        // Modern styling
+                        Text = "",
+                        FlatStyle = FlatStyle.Flat,
+                        BackColor = cellColor,
+                        Cursor = Cursors.Hand
+                    };
+
+                    // Styling cho flat button với border
+                    btn.FlatAppearance.BorderColor = Color.FromArgb(200, 210, 220);
+                    btn.FlatAppearance.BorderSize = 1;
+                    btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(220, 240, 255);
+                    btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(180, 220, 255);
+
+                    // Đăng ký sự kiện click (GIỮ NGUYÊN LOGIC)
+                    btn.Click += btn_Click;
+
+                    // Thêm vào panel và ma trận
+                    ChessBoard.Controls.Add(btn);
+                    Matrix[i].Add(btn);
+                }
+
+                // Delay nhỏ sau mỗi hàng để tạo hiệu ứng animation
+                await Task.Delay(15); // 15ms delay giữa các hàng
             }
 
             // Reset bộ đếm quân
@@ -522,11 +637,30 @@ namespace GameCaro
 
         private void ChangePlayer()
         {
-            // Cập nhật tên
-            PlayerName.Text = Player[CurrentPlayer].Name;
+            // Cập nhật tên - xử lý cho cả TextBox và UITextBox
+            if (PlayerName is UITextBox uiTextBox)
+            {
+                uiTextBox.Text = Player[CurrentPlayer].Name;
+            }
+            else if (PlayerName is TextBox textBox)
+            {
+                textBox.Text = Player[CurrentPlayer].Name;
+            }
+            else
+            {
+                // Fallback cho bất kỳ control nào có property Text
+                PlayerName.Text = Player[CurrentPlayer].Name;
+            }
             
-            // Cập nhật avatar (không phải Mark - quân cờ)
-            PlayerMark.Image = Player[CurrentPlayer].Avatar;
+            // Cập nhật avatar - xử lý cho cả PictureBox và UIAvatar
+            if (PlayerMark is UIAvatar uiAvatar)
+            {
+                uiAvatar.Image = Player[CurrentPlayer].Avatar;
+            }
+            else if (PlayerMark is PictureBox pictureBox)
+            {
+                pictureBox.Image = Player[CurrentPlayer].Avatar;
+            }
         }
 
         #endregion

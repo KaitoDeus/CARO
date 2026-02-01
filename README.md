@@ -4,19 +4,19 @@
 
 ### Lý Do Chọn Đề Tài
 
-Em chọn đề tài **Game Caro (Tic Tac Toe)** để rèn luyện kỹ năng **lập trình mạng (Socket)** và **Windows Forms**. Mục tiêu là tạo ra một ứng dụng tương tác realtime thay vì các bài tập quản lý dữ liệu đơn thuần.
+Rèn luyện kỹ năng **lập trình mạng (Socket)** và **Windows Forms** tương tác realtime.
 
 ### Bài Toán Đặt Ra
 
-- Kết nối hai người chơi trên hai máy tính khác nhau qua mạng LAN.
-- Đồng bộ tức thời dữ liệu game (nước đi, chat, kết quả) mà không có độ trễ.
-- Tối ưu hiệu năng đồ họa khi vẽ bàn cờ (sử dụng GDI+).
+- Kết nối hai người chơi qua mạng LAN không độ trễ.
+- Đồng bộ dữ liệu game (nước đi, chat, kết quả) tức thời.
+- Tối ưu hiệu năng đồ họa (GDI+).
 
 ### Công Nghệ Sử Dụng
 
-- **Ngôn Ngữ**: C#
-- **Framework**: Windows Forms (.NET)
-- **Đồ Họa**: GDI+
+- **Ngôn Ngữ**: C# .NET
+- **Framework**: Windows Forms (.NET Framework 4.8)
+- **UI Library**: SunnyUI v3.9.2
 - **Mạng**: `System.Net.Sockets` (TCP/IP)
 - **Đóng Gói Dữ Liệu**: `BinaryFormatter`
 
@@ -78,23 +78,24 @@ Khi chơi LAN, máy **Host** sẽ đóng vai trò Server (Cầm quân O - Player
 ```
 
 ## 3. Hướng Dẫn Chơi (Chế Độ LAN)
+
 **Lưu ý: Cả hai máy phải RadminVPN**
+
 1.  **MÁY HOST (Tạo phòng)**:
-    - Mở game lên.
     - Chọn **Game Mode** -> **LAN**.
-    - Copy `IP` trong network của RadminVPN đã tạo và paste vào Form chương trình. Bấm **CONNECT** (Nếu chưa có ai tạo thì nó tự tạo Server).
-    - Ngồi đợi bạn vào thôi.
+    - Nhập IP của máy mình (thường tự nhận diện) -> Bấm **LAN**.
+    - Đợi đối thủ kết nối.
+
 2.  **MÁY CLIENT (Vào phòng)**:
-    - Mở game trên máy khác (cùng mạng WiFi/LAN nhé).
     - Chọn **Game Mode** -> **LAN**.
-    - Phần IP (làm tương tự với máy HOST).
-    - Bấm **CONNECT** là chiến thôi!
+    - Nhập IP của Máy Host.
+    - Bấm **LAN** để kết nối.
 
 ---
 
-## 4. Thông Tin Tác Giả
+## 5. Thông Tin Tác Giả
 
-Dự án này được thực hiện bởi:
+Dự án được thực hiện bởi:
 
 - **Họ tên**: Võ Anh Khải
 - **Email**: kenkaneki395@gmail.com
