@@ -50,6 +50,8 @@ namespace GameCaro
                 cboGameMode.SelectedIndex = 0;
                 SetChatEnabled(false);
 
+
+
                 NewGame();
             }
             catch (Exception ex)
@@ -770,8 +772,8 @@ namespace GameCaro
 
             // PictureBox hiển thị avatar
             PictureBox pbAvatar = new PictureBox();
-            pbAvatar.Size = new Size(150, 150);
-            pbAvatar.Location = new Point(20, 20);
+            pbAvatar.Size = new Size(130, 150);
+            pbAvatar.Location = new Point(30, 20);
             pbAvatar.SizeMode = PictureBoxSizeMode.StretchImage;
             pbAvatar.BorderStyle = BorderStyle.FixedSingle;
             
@@ -792,7 +794,7 @@ namespace GameCaro
                            "Sinh viên thực hiện:\n" +
                            "- Họ và tên: Võ Anh Khải\n" +
                            "- Trường Đại học Giao Thông Vận Tải TP.HCM (UTH)";
-            lblInfo.Location = new Point(190, 20);
+            lblInfo.Location = new Point(175, 20);
             lblInfo.AutoSize = true;
             lblInfo.Font = new Font("Arial", 10, FontStyle.Regular);
             aboutForm.Controls.Add(lblInfo);
@@ -801,7 +803,7 @@ namespace GameCaro
             Button btnOK = new Button();
             btnOK.Text = "Đóng";
             btnOK.Size = new Size(100, 30);
-            btnOK.Location = new Point(410, 140);
+            btnOK.Location = new Point(410, 150);
             btnOK.DialogResult = DialogResult.OK;
             aboutForm.Controls.Add(btnOK);
             

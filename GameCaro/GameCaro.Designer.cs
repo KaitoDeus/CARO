@@ -49,16 +49,14 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-
+            this.clearLocalInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearLanInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.howToPlayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeNameAvatarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.sendMessageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-
-            this.clearLocalInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.clearLanInfoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
             this.txbMessage = new System.Windows.Forms.TextBox();
@@ -186,7 +184,7 @@
             // 
             // prcbCoolDown
             // 
-            this.prcbCoolDown.Location = new System.Drawing.Point(525, 22);
+            this.prcbCoolDown.Location = new System.Drawing.Point(525, 20);
             this.prcbCoolDown.Name = "prcbCoolDown";
             this.prcbCoolDown.Size = new System.Drawing.Size(144, 23);
             this.prcbCoolDown.TabIndex = 4;
@@ -195,8 +193,8 @@
             // 
             this.lblCountX.AutoSize = true;
             this.lblCountX.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCountX.ForeColor = System.Drawing.Color.OrangeRed;
-            this.lblCountX.Location = new System.Drawing.Point(450, 22);
+            this.lblCountX.ForeColor = System.Drawing.Color.SteelBlue;
+            this.lblCountX.Location = new System.Drawing.Point(450, 21);
             this.lblCountX.Name = "lblCountX";
             this.lblCountX.Size = new System.Drawing.Size(43, 22);
             this.lblCountX.TabIndex = 7;
@@ -206,8 +204,8 @@
             // 
             this.lblCountO.AutoSize = true;
             this.lblCountO.Font = new System.Drawing.Font("Courier New", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCountO.ForeColor = System.Drawing.Color.OrangeRed;
-            this.lblCountO.Location = new System.Drawing.Point(386, 22);
+            this.lblCountO.ForeColor = System.Drawing.Color.SteelBlue;
+            this.lblCountO.Location = new System.Drawing.Point(386, 21);
             this.lblCountO.Name = "lblCountO";
             this.lblCountO.Size = new System.Drawing.Size(43, 22);
             this.lblCountO.TabIndex = 6;
@@ -253,7 +251,6 @@
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newGameToolStripMenuItem,
-            this.newGameToolStripMenuItem,
             this.clearLocalInfoToolStripMenuItem,
             this.clearLanInfoToolStripMenuItem,
             this.toolStripSeparator1,
@@ -266,35 +263,34 @@
             // 
             this.newGameToolStripMenuItem.Name = "newGameToolStripMenuItem";
             this.newGameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.newGameToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.newGameToolStripMenuItem.Text = "New game";
             this.newGameToolStripMenuItem.Click += new System.EventHandler(this.newGameToolStripMenuItem_Click);
             // 
             // clearLocalInfoToolStripMenuItem
             // 
             this.clearLocalInfoToolStripMenuItem.Name = "clearLocalInfoToolStripMenuItem";
-            this.clearLocalInfoToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.clearLocalInfoToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.clearLocalInfoToolStripMenuItem.Text = "Xóa thông tin (2 người/máy)";
             this.clearLocalInfoToolStripMenuItem.Click += new System.EventHandler(this.clearLocalInfoToolStripMenuItem_Click);
             // 
             // clearLanInfoToolStripMenuItem
             // 
             this.clearLanInfoToolStripMenuItem.Name = "clearLanInfoToolStripMenuItem";
-            this.clearLanInfoToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.clearLanInfoToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.clearLanInfoToolStripMenuItem.Text = "Xóa thông tin (LAN)";
             this.clearLanInfoToolStripMenuItem.Click += new System.EventHandler(this.clearLanInfoToolStripMenuItem_Click);
-
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(171, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(222, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             this.quitToolStripMenuItem.Click += new System.EventHandler(this.quitToolStripMenuItem_Click);
             // 
@@ -332,7 +328,7 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(69, 20);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(70, 20);
             this.aboutToolStripMenuItem.Text = "Giới thiệu";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -359,11 +355,10 @@
             // 
             // btnSend
             // 
-            this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSend.Location = new System.Drawing.Point(253, 321);
+            this.btnSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSend.Location = new System.Drawing.Point(253, 322);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(75, 28);
+            this.btnSend.Size = new System.Drawing.Size(75, 26);
             this.btnSend.TabIndex = 12;
             this.btnSend.Text = "Gửi tin nhắn";
             this.btnSend.UseVisualStyleBackColor = true;

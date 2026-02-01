@@ -12,7 +12,7 @@ namespace GameCaro
         public static int CHESS_HEIGHT = 30;
 
         public static int CHESS_BOARD_WIDTH = 30;
-        public static int CHESS_BOARD_HEIGHT = 42;
+        public static int CHESS_BOARD_HEIGHT = 40;
 
         public static int COOL_DOWN_STEP = 100;
         public static int COOL_DOWN_TIME = 10000;
