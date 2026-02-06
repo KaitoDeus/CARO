@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gamecaro-uth.vercel.app/sitemap.xml
