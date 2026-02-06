@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng Dẫn - CARO</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <!-- CSS & Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/caro.ico">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="app-header"></div>
+
+
+
+    <!-- Installation Guide -->
+    <section class="installation-guide" style="padding: 60px 0; background-color: var(--white);">
+        <div class="container">
+            <div class="section-title text-center" style="text-align: center; margin-bottom: 50px;">
+                <h2 style="font-size: 2.2rem; margin-bottom: 15px;">Hướng Dẫn Cài Đặt</h2>
+            </div>
+
+            <div class="install-options" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-bottom: 40px;">
+                <!-- Setup Version -->
+                <div class="install-card" style="padding: 30px; border-radius: 20px; border: 1px solid #eee; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                    <div class="icon-box" style="margin-bottom: 20px; width: 60px; height: 60px; background: rgba(13, 110, 253, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.5rem;">
+                        <i class="fa-solid fa-hard-drive"></i>
+                    </div>
+                    <h3 style="margin-bottom: 15px;">Bản Cài Đặt (Setup)</h3>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">Dành cho người dùng muốn cài đặt ổn định vào hệ thống.</p>
+                    <ul class="step-list" style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <span style="font-weight: 700; color: var(--primary);">B1.</span>
+                            Tải file <code>GameCaro_Setup_v0.0.x.exe</code> từ link tải.
+                        </li>
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <span style="font-weight: 700; color: var(--primary);">B2.</span>
+                            Chạy file Setup, nhấn <strong>Next</strong> liên tục để cài đặt.
+                        </li>
+                        <li style="display: flex; gap: 10px;">
+                            <span style="font-weight: 700; color: var(--primary);">B3.</span>
+                            Game sẽ xuất hiện ngoài Desktop và Start Menu.
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Portable Version -->
+                <div class="install-card" style="padding: 30px; border-radius: 20px; border: 1px solid #eee; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                    <div class="icon-box" style="margin-bottom: 20px; width: 60px; height: 60px; background: rgba(25, 135, 84, 0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #198754; font-size: 1.5rem;">
+                        <i class="fa-solid fa-suitcase"></i>
+                    </div>
+                    <h3 style="margin-bottom: 15px;">Bản Portable (Chạy Ngay)</h3>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">Dành cho USB hoặc chơi nhanh không cần cài đặt.</p>
+                    <ul class="step-list" style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <span style="font-weight: 700; color: #198754;">B1.</span>
+                            Tải file nén <code>GameCaro_Portable_v0.0.x.zip</code> hoặc file exe chạy liền.
+                        </li>
+                        <li style="margin-bottom: 15px; display: flex; gap: 10px;">
+                            <span style="font-weight: 700; color: #198754;">B2.</span>
+                            Giải nén file zip (nếu có) vào một thư mục.
+                        </li>
+                        <li style="display: flex; gap: 10px;">
+                            <span style="font-weight: 700; color: #198754;">B3.</span>
+                            Chạy file <code>GameCaro.exe</code> để chơi ngay lập tức.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comprehensive Guide -->
+    <section class="guide-section">
+        <div class="container">
+            <div class="section-title text-center" style="text-align: center; margin-bottom: 50px;">
+                <h2 style="font-size: 2.2rem; margin-bottom: 15px;">Hướng Dẫn Chơi</h2>
+            </div>
+            <div class="guide-grid">
+                <div class="guide-card">
+                    <span class="step-badge">1</span>
+                    <h3>Chuẩn Bị</h3>
+                    <p>Tải game về và giải nén. Chạy file <code>GameCaro.exe</code>. Hãy đảm bảo cả 2 máy tính cùng kết nối vào một mạng WiFi nếu chơi LAN.</p>
+                </div>
+
+                <div class="guide-card">
+                    <span class="step-badge">2</span>
+                    <h3>Kết Nối (LAN)</h3>
+                    <div class="guide-content">
+                        <p><strong>Máy Chủ (Host):</strong> Nhập IP của mình -> Bấm nút 'LAN' để tạo phòng.</p>
+                        <p><strong>Người Chơi (Client):</strong> Nhập IP của Máy Chủ -> Bấm nút 'LAN' để vào phòng.</p>
+                    </div>
+                </div>
+
+                <div class="guide-card">
+                    <span class="step-badge">3</span>
+                    <h3>Luật Chơi</h3>
+                    <p>Người chơi lần lượt đánh O hoặc X. Người nào tạo được <strong>5 quân liên tiếp</strong> (ngang, dọc, chéo) trước sẽ chiến thắng.</p>
+                </div>
+                
+                <div class="guide-card">
+                    <span class="step-badge">4</span>
+                    <h3>Phím Tắt</h3>
+                    <ul class="shortcut-list">
+                        <li><code>Ctrl + N</code>: Ván mới</li>
+                        <li><code>Ctrl + Z</code>: Đi lại (Undo)</li>
+                        <li><code>Ctrl + Y</code>: Đi tiếp (Redo)</li>
+                        <li><code>Esc</code>: Thoát game</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="app-footer"></div>
+
+    <script src="ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

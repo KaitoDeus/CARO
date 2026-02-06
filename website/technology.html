@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công Nghệ - GameCaro</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <!-- CSS & Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/caro.ico">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .tech-hero {
+            padding: 120px 0 60px;
+            background: var(--bg);
+            text-align: center;
+        }
+        
+        .tech-grid {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+        
+        .tech-card {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .tech-icon {
+            font-size: 40px;
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .tech-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .tech-content p {
+            color: var(--text-light);
+        }
+
+        .architecture {
+            padding: 80px 0;
+            background: var(--white);
+        }
+        
+        .diagram {
+            background: #f8f9fa;
+            border: 2px dashed #ddd;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+            font-family: monospace;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .tech-grid {
+                grid-template-columns: 1fr;
+            }
+            .tech-card {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-header"></div>
+
+    <!-- Tech Hero -->
+    <section class="tech-hero">
+        <div class="container">
+            <span class="badge">Technical Stack</span>
+            <h1>Công Nghệ Sử Dụng</h1>
+            <p style="max-width: 600px; margin: 20px auto; color: var(--text-light);">
+                Khám phá các công nghệ và kỹ thuật lập trình được sử dụng để xây dựng GameCaro, từ giao diện đến hệ thống mạng.
+            </p>
+        </div>
+    </section>
+
+    <!-- Tech Details -->
+    <section class="container" style="padding-bottom: 80px;">
+        <div class="tech-grid">
+            
+            <!-- C# .NET -->
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fa-brands fa-microsoft"></i>
+                </div>
+                <div class="tech-content">
+                    <h3>C# & .NET Framework 4.8</h3>
+                    <p>Ngôn ngữ lập trình mạnh mẽ, hướng đối tượng. Sử dụng .NET Framework 4.8 đảm bảo tính tương thích cao trên mọi máy tính Windows.</p>
+                </div>
+            </div>
+
+            <!-- Windows Forms -->
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fa-solid fa-window-maximize"></i>
+                </div>
+                <div class="tech-content">
+                    <h3>Windows Forms (WinForms)</h3>
+                    <p>Nền tảng xây dựng ứng dụng desktop truyền thống nhưng hiệu quả. Tối ưu hóa việc vẽ bàn cờ (GDI+) để đảm bảo hiệu năng.</p>
+                </div>
+            </div>
+
+            <!-- Socket TCP/IP -->
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fa-solid fa-network-wired"></i>
+                </div>
+                <div class="tech-content">
+                    <h3>Socket TCP/IP</h3>
+                    <p>Hệ thống mạng LAN sử dụng protocol TCP để đảm bảo dữ liệu (nước đi, chat) được truyền tin cậy, đúng thứ tự, không bị mất gói tin.</p>
+                </div>
+            </div>
+
+            <!-- SunnyUI -->
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fa-solid fa-paintbrush"></i>
+                </div>
+                <div class="tech-content">
+                    <h3>SunnyUI Library</h3>
+                    <p>Thư viện UI bên thứ 3 giúp hiện đại hóa giao diện WinForms, mang lại các control đẹp mắt, phẳng và trải nghiệm người dùng mượt mà.</p>
+                </div>
+            </div>
+            
+             <!-- Algorithm -->
+             <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+                <div class="tech-content">
+                    <h3>Thuật Toán Heuristic</h3>
+                    <p>AI được xây dựng dựa trên việc đánh giá điểm số của từng ô trống dựa trên các thế cờ tấn công và phòng thủ, giúp máy có nước đi thông minh.</p>
+                </div>
+            </div>
+
+            <!-- Serialization -->
+            <div class="tech-card">
+                <div class="tech-icon">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <div class="tech-content">
+                    <h3>Binary Serialization</h3>
+                    <p>Dữ liệu truyền qua mạng được đóng gói dạng nhị phân, giúp tối ưu băng thông và tăng tốc độ xử lý gói tin.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Architecture -->
+    <section class="architecture">
+        <div class="container">
+            <div class="section-title">
+                <h2>Kiến Trúc Hệ Thống</h2>
+                <p>Mô hình kết nối LAN Client-Server</p>
+            </div>
+            
+            <div class="diagram">
++---------------------+           +------------------------+
+|      GameCaro       | <-------> |   ChessBoardManager    |
+|    (Giao Diện Chính)|           |   (Luật & Vẽ Bàn Cờ)   |
++---------------------+           +------------------------+
+          |
+          | Sử dụng
+          v
++---------------------+           +------------------------+
+|    SocketManager    | --------> |       SocketData       |
+|    (Kết Nối TCP)    |           |    (Gói Tin Mạng)      |
++---------------------+           +------------------------+
+            </div>
+            
+            <p style="text-align: center; max-width: 800px; margin: 0 auto; color: var(--text-light);">
+                Hệ thống hoạt động theo mô hình Peer-to-Peer giả lập. Một máy đóng vai trò Host (Server) lắng nghe kết nối, máy còn lại (Client) kết nối vào IP của Host. Cả hai trao đổi dữ liệu qua lại bình đẳng.
+            </p>
+        </div>
+    </section>
+
+    <div id="app-footer"></div>
+
+    <script src="ui.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Active link script specifically for this page if needed, 
+        // though strictly handled by class="active" in HTML above.
+    </script>
+</body>
+</html>

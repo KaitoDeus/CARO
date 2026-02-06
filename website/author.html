@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Về Tác Giả - CARO</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <!-- CSS & Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/caro.ico">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        .author-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: #f0f4f8; /* Slightly darker than standard bg */
+        }
+        
+        .profile-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(67, 97, 238, 0.15);
+            text-align: center;
+            position: relative;
+        }
+        
+        .profile-badge {
+            display: inline-block;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            padding: 8px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        
+        .profile-subtitle {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .profile-subtitle::before, .profile-subtitle::after {
+            content: '';
+            display: block;
+            width: 5px;
+            height: 5px;
+            background: #ccc;
+            border-radius: 50%;
+        }
+        
+        .avatar-wrapper {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+        
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--white);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .status-dot {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: #2ecc71;
+            border: 3px solid var(--white);
+            border-radius: 50%;
+        }
+        
+        .contact-box {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        
+        .contact-box:hover {
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+        }
+        
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        
+        .contact-info {
+            text-align: left;
+            overflow: hidden;
+        }
+        
+        .contact-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        
+        .contact-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .social-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px;
+            border-radius: 15px;
+            font-weight: 600;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        
+        .btn-facebook {
+            background: #e7f0ff; /* Light blue akin to standard social buttons but lighter */
+            color: #1877f2;
+        }
+        
+        .btn-facebook:hover {
+            background: #1877f2;
+            color: #fff;
+        }
+        
+        .btn-github {
+            background: #f0f0f0;
+            color: #333;
+        }
+        
+        .btn-github:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .btn-instagram {
+            background: #ffebf0;
+            color: #d62976;
+        }
+        
+        .btn-instagram:hover {
+            background: #d62976;
+            color: #fff;
+        }
+
+        
+        /* Animation */
+        .profile-card {
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-header"></div>
+
+    <!-- Main Content -->
+    <section class="author-section">
+        <div class="container" style="display: flex; justify-content: center;">
+            
+            <div class="profile-card">
+                <div class="profile-badge">Liên Hệ</div>
+                <div class="profile-subtitle">Developer Profile</div>
+                
+                <div class="avatar-wrapper">
+                    <img src="assets/avatar.jpg" alt="Vo Anh Khai" class="avatar-img">
+                    <div class="status-dot"></div>
+                </div>
+                
+                <h2 style="margin-bottom: 10px; font-size: 1.5rem;">Võ Anh Khải</h2>
+                
+                <!-- Email -->
+                <div class="contact-box">
+                    <div class="contact-icon">
+                        <i class="fa-solid fa-envelope"></i>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value">khaivo300605@gmail.com</div>
+                    </div>
+                </div>
+
+                <!-- Socials -->
+                <div class="social-row">
+                    <a href="https://www.facebook.com/kaitovo8952/" target="_blank" class="social-btn btn-facebook">
+                        <i class="fa-brands fa-facebook"></i> Facebook
+                    </a>
+                    <a href="https://www.instagram.com/_kai.desu/" target="_blank" class="social-btn btn-instagram">
+                        <i class="fa-brands fa-instagram"></i> Instagram
+                    </a>
+                </div>
+                
+            </div>
+            
+        </div>
+    </section>
+
+    <div id="app-footer"></div>
+
+    <script src="ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
